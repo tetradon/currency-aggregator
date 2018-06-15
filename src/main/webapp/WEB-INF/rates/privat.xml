@@ -1,0 +1,17 @@
+<rates>
+    <rate>
+        <code>USD</code>
+        <buy>25.9</buy>
+        <sell>26.15</sell>
+    </rate>
+    <rate>
+        <code>RUB</code>
+        <buy>0.406</buy>
+        <sell>0.43</sell>
+    </rate>
+    <rate>
+        <code>EUR</code>
+        <buy>30.35</buy>
+        <sell>30.95</sell>
+    </rate>
+</rates>
