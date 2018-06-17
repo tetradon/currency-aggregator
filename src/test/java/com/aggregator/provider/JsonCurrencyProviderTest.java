@@ -67,6 +67,20 @@ public class JsonCurrencyProviderTest {
         assertEquals(newValue, usdFromFile.getBuy());
     }
 
+    @Test
+    public void testUpdateSellPrice(){
+        Double newValue = 999.999;
+        provider.updateSellPrice(file,"CHF",newValue);
+        CurrencyRate chfFromFile = provider.getData(file).get(1);
+        assertEquals(newValue, chfFromFile.getSell());
+    }
+
+    @Test
+    public void testDelete(){
+        provider.deleteRatesForBank(file);
+        assertEquals(0,file.length());
+    }
+
     @After
     public void cleanup() {
         file.delete();
