@@ -1,9 +1,6 @@
 package com.aggregator.provider;
 
 import com.aggregator.model.CurrencyRate;
-import com.aggregator.provider.CurrencyProvider;
-import com.aggregator.provider.XmlCurrencyProvider;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,6 +66,20 @@ public class XmlCurrencyProviderTest {
         provider.updateBuyPrice(file,"USD",newValue);
         CurrencyRate usdFromFile = provider.getData(file).get(0);
         assertEquals(newValue, usdFromFile.getBuy());
+    }
+
+    @Test
+    public void testUpdateSellPrice(){
+        Double newValue = 999.999;
+        provider.updateSellPrice(file,"RUB",newValue);
+        CurrencyRate rubFromFile = provider.getData(file).get(1);
+        assertEquals(newValue, rubFromFile.getSell());
+    }
+
+    @Test
+    public void testDelete(){
+       provider.deleteRatesForBank(file);
+       assertEquals(0,file.length());
     }
 
     @After
