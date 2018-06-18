@@ -86,14 +86,10 @@
                                 <totalLineRate>80</totalLineRate>
                                 <totalBranchRate>80</totalBranchRate>
                             </check>
-                                <formats>
-                                    <format>html</format>
-                                    <format>xml</format>
-                                </formats>
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>package</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>check</goal>
                                 </goals>

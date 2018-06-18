@@ -1,47 +1,23 @@
 package com.aggregator.storage;
 
 import com.aggregator.model.CurrencyRate;
-import com.aggregator.provider.CurrencyProvider;
-import com.aggregator.provider.ProviderFactory;
-import com.aggregator.utils.FileUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.context.ServletContextAware;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
-import java.io.File;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 
 @Repository
-public class CurrencyRatesStorage implements ServletContextAware {
-    private CurrencyProvider currencyProvider;
-    private Map<String, List<CurrencyRate>> currencyData;
-    private ServletContext servletContext;
+public class CurrencyRatesStorage {
 
-    public CurrencyRatesStorage() {
-        currencyData = new HashMap<>();
-    }
+    private Map<String, List<CurrencyRate>> currencyData;
 
     public CurrencyRatesStorage(Map<String, List<CurrencyRate>> currencyData) {
         this.currencyData = currencyData;
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        File folder = new File(servletContext.getRealPath("/WEB-INF/rates/"));
-        List<CurrencyRate> rates;
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
-            rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
-            currencyData.put(FileUtils.stripExtension(fileEntry.getName()), rates);
-        }
     }
 
     public Map<String, List<CurrencyRate>> getAllRates() {
@@ -137,41 +113,23 @@ public class CurrencyRatesStorage implements ServletContextAware {
         return list;
     }
 
-
-    public void updateSellPriceForBank(String bank, String code, String value) {
-        updateSellPriceForBank(bank, code, value, "sell");
-    }
-
-    public void updateBuyPriceForBank(String bank, String code, String value) {
-        updateSellPriceForBank(bank, code, value, "buy");
-    }
-
-    private void updateSellPriceForBank(String bank, String code, String value, String tag) {
-        File file = FileUtils.findFileByName(servletContext, bank);
-        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
-        if (tag.equals("sell"))
-            currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
-        else if (tag.equals("buy"))
-            currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
-        List<CurrencyRate> entry = currencyProvider.getData(file);
+    public void updateSellPriceForBank(String bank, List<CurrencyRate> entry) {
         currencyData.put(bank, entry);
-
     }
 
+    public void updateBuyPriceForBank(String bank, List<CurrencyRate> entry) {
+        currencyData.put(bank, entry);
+    }
 
     public void deleteRatesForBank(String bank) {
         for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet()) {
             if (entry.getKey().equals(bank))
                 entry.getValue().clear();
         }
-        File file = FileUtils.findFileByName(servletContext, bank);
-        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
-        currencyProvider.deleteRatesForBank(file);
     }
 
-    @Override
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
+    public void putData(String s, List<CurrencyRate> rates) {
+        currencyData.put(s, rates);
     }
 }
 
