@@ -25,6 +25,10 @@ public class CurrencyRatesStorage implements ServletContextAware {
         currencyData = new HashMap<>();
     }
 
+    public CurrencyRatesStorage(Map<String, List<CurrencyRate>> currencyData) {
+        this.currencyData = currencyData;
+    }
+
     @PostConstruct
     public void postConstruct() {
         File folder = new File(servletContext.getRealPath("/WEB-INF/rates/"));
@@ -99,7 +103,7 @@ public class CurrencyRatesStorage implements ServletContextAware {
                             maxBuyBank = entry.getKey();
                         }
 
-                        else {
+                        if(rate.getSell() <= minSell) {
                             minSell = rate.getSell();
                             minSellBank = entry.getKey();
                         }
