@@ -1,17 +1,20 @@
 package com.aggregator.provider;
 
 import com.aggregator.model.CurrencyRate;
+import com.aggregator.utils.FileUtils;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.aggregator.utils.FIleUtils.deleteContentOfFile;
 
 public class CsvCurrencyProvider implements CurrencyProvider {
     private static List<CurrencyRate> resultList = new ArrayList<>();
@@ -42,7 +45,7 @@ public class CsvCurrencyProvider implements CurrencyProvider {
 
     @Override
     public void deleteRatesForBank(File file) {
-        deleteContentOfFile(file);
+        FileUtils.deleteContentOfFile(file);
     }
 
     private void updatePrice(File file, String code, Double newValue, String tag) {

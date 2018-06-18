@@ -1,6 +1,7 @@
 package com.aggregator.provider;
 
 import com.aggregator.model.CurrencyRate;
+import com.aggregator.utils.FileUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -9,11 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
-import java.io.*;
-import java.util.*;
-
-import static com.aggregator.utils.FIleUtils.deleteContentOfFile;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class JsonCurrencyProvider implements CurrencyProvider {
     private static ArrayList<CurrencyRate> resultList;
@@ -44,7 +46,7 @@ public class JsonCurrencyProvider implements CurrencyProvider {
 
     @Override
     public void deleteRatesForBank(File file) {
-        deleteContentOfFile(file);
+        FileUtils.deleteContentOfFile(file);
     }
 
     private void updatePrice(File file, String code, Double newValue, String tag) {

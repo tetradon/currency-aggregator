@@ -3,17 +3,21 @@ package com.aggregator.storage;
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.provider.CurrencyProvider;
 import com.aggregator.provider.ProviderFactory;
+import com.aggregator.utils.FileUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import java.io.File;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
-import static com.aggregator.utils.FIleUtils.findFileByName;
-import static com.aggregator.utils.FIleUtils.getExtension;
-import static com.aggregator.utils.FIleUtils.stripExtension;
 
 @Repository
 public class CurrencyRatesStorage implements ServletContextAware {
@@ -34,9 +38,9 @@ public class CurrencyRatesStorage implements ServletContextAware {
         File folder = new File(servletContext.getRealPath("/WEB-INF/rates/"));
         List<CurrencyRate> rates;
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            currencyProvider = ProviderFactory.getProvider(getExtension(fileEntry));
+            currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
             rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
-            currencyData.put(stripExtension(fileEntry.getName()), rates);
+            currencyData.put(FileUtils.stripExtension(fileEntry.getName()), rates);
         }
     }
 
@@ -103,7 +107,7 @@ public class CurrencyRatesStorage implements ServletContextAware {
                             maxBuyBank = entry.getKey();
                         }
 
-                        if(rate.getSell() <= minSell) {
+                        if (rate.getSell() <= minSell) {
                             minSell = rate.getSell();
                             minSellBank = entry.getKey();
                         }
@@ -142,10 +146,10 @@ public class CurrencyRatesStorage implements ServletContextAware {
         updateSellPriceForBank(bank, code, value, "buy");
     }
 
-    private void updateSellPriceForBank(String bank, String code, String value, String tag){
-        File file = findFileByName(servletContext, bank);
-        currencyProvider = ProviderFactory.getProvider(getExtension(file));
-        if(tag.equals("sell"))
+    private void updateSellPriceForBank(String bank, String code, String value, String tag) {
+        File file = FileUtils.findFileByName(servletContext, bank);
+        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
+        if (tag.equals("sell"))
             currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
         else if (tag.equals("buy"))
             currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
@@ -160,8 +164,8 @@ public class CurrencyRatesStorage implements ServletContextAware {
             if (entry.getKey().equals(bank))
                 entry.getValue().clear();
         }
-        File file = findFileByName(servletContext, bank);
-        currencyProvider = ProviderFactory.getProvider(getExtension(file));
+        File file = FileUtils.findFileByName(servletContext, bank);
+        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
         currencyProvider.deleteRatesForBank(file);
     }
 

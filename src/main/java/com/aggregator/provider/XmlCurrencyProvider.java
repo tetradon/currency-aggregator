@@ -2,6 +2,8 @@ package com.aggregator.provider;
 
 
 import com.aggregator.model.CurrencyRate;
+import com.aggregator.utils.DomUtils;
+import com.aggregator.utils.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,9 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.aggregator.utils.DomUtils.*;
-import static com.aggregator.utils.FIleUtils.deleteContentOfFile;
 
 public class XmlCurrencyProvider implements CurrencyProvider {
 
@@ -29,9 +28,9 @@ public class XmlCurrencyProvider implements CurrencyProvider {
                     break;
                 case Node.ELEMENT_NODE:
                     if (node.getNodeName().equals("rate")) {
-                        String code = getChildValue(node, "code");
-                        Double buy = Double.valueOf(Objects.requireNonNull(getChildValue(node, "buy")));
-                        Double sell = Double.valueOf(Objects.requireNonNull(getChildValue(node, "sell")));
+                        String code = DomUtils.getChildValue(node, "code");
+                        Double buy = Double.valueOf(Objects.requireNonNull(DomUtils.getChildValue(node, "buy")));
+                        Double sell = Double.valueOf(Objects.requireNonNull(DomUtils.getChildValue(node, "sell")));
                         resultList.add(new CurrencyRate(code, buy, sell));
                     }
                     passChild(node);
@@ -48,8 +47,8 @@ public class XmlCurrencyProvider implements CurrencyProvider {
 
     public List<CurrencyRate> getData(File file) {
         resultList = new ArrayList<>();
-        if(file.length() != 0) {
-            Document doc = createDocument(file);
+        if (file.length() != 0) {
+            Document doc = DomUtils.createDocument(file);
             nextNode(doc);
         }
         return resultList;
@@ -64,7 +63,7 @@ public class XmlCurrencyProvider implements CurrencyProvider {
     }
 
     private void updatePrice(File file, String code, Double newValue, String tag) {
-        Document doc = createDocument(file);
+        Document doc = DomUtils.createDocument(file);
         NodeList rates = doc.getElementsByTagName("rate");
         Element element;
 
@@ -73,9 +72,9 @@ public class XmlCurrencyProvider implements CurrencyProvider {
             Node node = element.getElementsByTagName("code").item(0);
 
             if (node.getFirstChild().getNodeValue().equals(code)) {
-                findTagAndSetValue(node, tag, newValue);
+                DomUtils.findTagAndSetValue(node, tag, newValue);
                 try {
-                    saveUpdateToXml(file, doc);
+                    DomUtils.saveUpdateToXml(file, doc);
                 } catch (TransformerException e) {
                     e.printStackTrace();
                 }
@@ -84,6 +83,6 @@ public class XmlCurrencyProvider implements CurrencyProvider {
     }
 
     public void deleteRatesForBank(File file) {
-        deleteContentOfFile(file);
+        FileUtils.deleteContentOfFile(file);
     }
 }
