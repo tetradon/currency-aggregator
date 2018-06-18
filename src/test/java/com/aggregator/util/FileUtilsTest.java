@@ -40,11 +40,4 @@ public class FileUtilsTest {
         assertEquals("csv", FileUtils.getExtension(file));
         file.delete();
     }
-
-  /*  @Test(expected = FileNotFoundException.class)
-    public void deleteIfNotExist() throws IOException {
-        File file = File.createTempFile("temp","txt");
-        file.delete();
-        FileUtils.deleteContentOfFile(file);
-    }*/
 }
