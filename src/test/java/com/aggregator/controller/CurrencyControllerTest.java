@@ -18,7 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -121,6 +120,7 @@ public class CurrencyControllerTest {
         assertEquals("{\"pumb\":0.4}",result.getResponse().getContentAsString());
     }
 
+
     @Test
     public void testGetUSDSellPrices() throws Exception {
         MvcResult result = mockMvc.perform(get("/USD/sell"))
@@ -130,8 +130,16 @@ public class CurrencyControllerTest {
     }
 
     @Test
-    public void testUpdateUSDSellPrice() throws Exception {
+    public void testUpdateUSDBuyPrice() throws Exception {
         MvcResult result = mockMvc.perform(put("/RUB/buy")
+                .param("bank","pumb")
+                .param("value", "0.01")).andReturn();
+        assertEquals("{\"status\" : \"ok\"}", result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testUpdateUSDSellPrice() throws Exception {
+        MvcResult result = mockMvc.perform(put("/RUB/sell")
                 .param("bank","pumb")
                 .param("value", "0.01")).andReturn();
         assertEquals("{\"status\" : \"ok\"}", result.getResponse().getContentAsString());
@@ -152,10 +160,20 @@ public class CurrencyControllerTest {
                 .andReturn();
         assertEquals("{\"USD\":{\"buy\":{\"pumb\":26.11},\"sell\":{\"pumb\":27.11}},\"RUB\":{\"buy\":{\"pumb\":0.4},\"sell\":{\"pumb\":0.5}}}" , result.getResponse().getContentAsString());
     }
+
     @Test
-    public void testGetRUBBuyPricesSorted() throws Exception {
+    public void testGetRUBBuyPricesSortedAsc() throws Exception {
         MvcResult result = mockMvc.perform(get("/RUB/buy")
                 .param("sort", "asc"))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("{\"pumb\":0.4}", result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testGetRUBBuyPricesSortedDesc() throws Exception {
+        MvcResult result = mockMvc.perform(get("/RUB/buy")
+                .param("sort", "desc"))
                 .andExpect(status().isOk())
                 .andReturn();
         assertEquals("{\"pumb\":0.4}", result.getResponse().getContentAsString());
