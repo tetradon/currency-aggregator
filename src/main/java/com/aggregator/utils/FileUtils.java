@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-public class FIleUtils {
+public class FileUtils {
     public static String stripExtension(String str) {
         if (str == null) return null;
         int pos = str.lastIndexOf(".");
