@@ -13,7 +13,6 @@
         <springframework.version>5.0.4.RELEASE</springframework.version>
     </properties>
 
-
     <profiles>
         <profile>
             <id>sonar</id>
@@ -77,7 +76,6 @@
                             </execution>
                         </executions>
                     </plugin>-->
-
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>cobertura-maven-plugin</artifactId>
@@ -168,7 +166,6 @@
         </plugins>
     </reporting>
 
-
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -253,6 +250,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
 
