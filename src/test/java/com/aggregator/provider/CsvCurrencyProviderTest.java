@@ -26,21 +26,21 @@ public class CsvCurrencyProviderTest {
         rateList = Arrays.asList(usd, chf, eur);
 
         file = File.createTempFile("temp", ".csv");
-        FileWriter fos = new FileWriter(file);
-        fos.write(
-                "USD,25.85,26.1\n" +
-                    "RUB,0.37,0.43\n" +
-                    "EUR,30.4,30.69"
-                 );
-        fos.flush();
-        fos.close();
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(
+                        "USD,25.85,26.1\n" +
+                            "RUB,0.37,0.43\n" +
+                            "EUR,30.4,30.69"
+            );
+            writer.flush();
+        }
         provider = new CsvCurrencyProvider();
     }
 
     @Test
     public void testGetAllRates() {
-        List <CurrencyRate> ratesFromFile = provider.getData(file);
-        for(int i=0;i<rateList.size();i++){
+        List<CurrencyRate> ratesFromFile = provider.getData(file);
+        for (int i = 0; i < rateList.size(); i++) {
             assertEquals(rateList.get(i).getCode(), ratesFromFile.get(i).getCode());
             assertEquals(rateList.get(i).getBuy(), ratesFromFile.get(i).getBuy());
             assertEquals(rateList.get(i).getSell(), ratesFromFile.get(i).getSell());
@@ -48,28 +48,27 @@ public class CsvCurrencyProviderTest {
     }
 
     @Test
-    public void testUpdateBuyPrice(){
-        System.out.println(provider.getData(file));
+    public void testUpdateBuyPrice() {
         Double newValue = 999.999;
-        provider.updateBuyPrice(file,"USD",newValue);
-        int indexOfUpdatedValue = provider.getData(file).size()-1;
+        provider.updateBuyPrice(file, "USD", newValue);
+        int indexOfUpdatedValue = provider.getData(file).size() - 1;
         CurrencyRate usdFromFile = provider.getData(file).get(indexOfUpdatedValue);
         assertEquals(newValue, usdFromFile.getBuy());
     }
 
     @Test
-    public void testUpdateSellPrice(){
+    public void testUpdateSellPrice() {
         Double newValue = 999.999;
-        provider.updateSellPrice(file,"RUB",newValue);
-        int indexOfUpdatedValue = provider.getData(file).size()-1;
+        provider.updateSellPrice(file, "RUB", newValue);
+        int indexOfUpdatedValue = provider.getData(file).size() - 1;
         CurrencyRate rubFromFile = provider.getData(file).get(indexOfUpdatedValue);
         assertEquals(newValue, rubFromFile.getSell());
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         provider.deleteRatesForBank(file);
-        assertEquals(0,file.length());
+        assertEquals(0, file.length());
     }
 
     @After

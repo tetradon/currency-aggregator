@@ -11,8 +11,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-
-
 public class XmlCurrencyProviderTest {
 
     private File file;
@@ -27,33 +25,35 @@ public class XmlCurrencyProviderTest {
         rateList = Arrays.asList(usd, rub, eur);
 
         file = File.createTempFile("temp", ".xml");
-        FileWriter fos = new FileWriter(file);
-        fos.write("<rates>\n" +
-                "    <rate>\n" +
-                "        <code>USD</code>\n" +
-                "        <buy>25.85</buy>\n" +
-                "        <sell>26.1</sell>\n" +
-                "    </rate>\n" +
-                "    <rate>\n" +
-                "        <code>RUB</code>\n" +
-                "        <buy>0.405</buy>\n" +
-                "        <sell>0.43</sell>\n" +
-                "    </rate>\n" +
-                "    <rate>\n" +
-                "        <code>EUR</code>\n" +
-                "        <buy>30.1</buy>\n" +
-                "        <sell>30.65</sell>\n" +
-                "    </rate>\n" +
-                "</rates>");
-        fos.flush();
-        fos.close();
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("<rates>\n" +
+                    "    <rate>\n" +
+                    "        <code>USD</code>\n" +
+                    "        <buy>25.85</buy>\n" +
+                    "        <sell>26.1</sell>\n" +
+                    "    </rate>\n" +
+                    "    <rate>\n" +
+                    "        <code>RUB</code>\n" +
+                    "        <buy>0.405</buy>\n" +
+                    "        <sell>0.43</sell>\n" +
+                    "    </rate>\n" +
+                    "    <rate>\n" +
+                    "        <code>EUR</code>\n" +
+                    "        <buy>30.1</buy>\n" +
+                    "        <sell>30.65</sell>\n" +
+                    "    </rate>\n" +
+                    "</rates>");
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         provider = new XmlCurrencyProvider();
     }
 
     @Test
     public void testGetAllRates() {
-        List <CurrencyRate> ratesFromFile = provider.getData(file);
-        for(int i=0;i<rateList.size();i++){
+        List<CurrencyRate> ratesFromFile = provider.getData(file);
+        for (int i = 0; i < rateList.size(); i++) {
             assertEquals(rateList.get(i).getCode(), ratesFromFile.get(i).getCode());
             assertEquals(rateList.get(i).getBuy(), ratesFromFile.get(i).getBuy());
             assertEquals(rateList.get(i).getSell(), ratesFromFile.get(i).getSell());
@@ -61,25 +61,25 @@ public class XmlCurrencyProviderTest {
     }
 
     @Test
-    public void testUpdateBuyPrice(){
+    public void testUpdateBuyPrice() {
         Double newValue = 999.999;
-        provider.updateBuyPrice(file,"USD",newValue);
+        provider.updateBuyPrice(file, "USD", newValue);
         CurrencyRate usdFromFile = provider.getData(file).get(0);
         assertEquals(newValue, usdFromFile.getBuy());
     }
 
     @Test
-    public void testUpdateSellPrice(){
+    public void testUpdateSellPrice() {
         Double newValue = 999.999;
-        provider.updateSellPrice(file,"RUB",newValue);
+        provider.updateSellPrice(file, "RUB", newValue);
         CurrencyRate rubFromFile = provider.getData(file).get(1);
         assertEquals(newValue, rubFromFile.getSell());
     }
 
     @Test
-    public void testDelete(){
-       provider.deleteRatesForBank(file);
-       assertEquals(0,file.length());
+    public void testDelete() {
+        provider.deleteRatesForBank(file);
+        assertEquals(0, file.length());
     }
 
     @After

@@ -26,33 +26,33 @@ public class JsonCurrencyProviderTest {
         rateList = Arrays.asList(usd, chf, eur);
 
         file = File.createTempFile("temp", ".json");
-        FileWriter fos = new FileWriter(file);
-        fos.write("[\n" +
-                "  {\n" +
-                "    \"code\": \"USD\",\n" +
-                "    \"buy\": 25.9,\n" +
-                "    \"sell\": 26.1\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"code\": \"CHF\",\n" +
-                "    \"buy\": 25.75,\n" +
-                "    \"sell\": 26.35\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"code\": \"EUR\",\n" +
-                "    \"buy\": 30.2,\n" +
-                "    \"sell\": 30.75\n" +
-                "  }\n" +
-                "]\n");
-        fos.flush();
-        fos.close();
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("[\n" +
+                    "  {\n" +
+                    "    \"code\": \"USD\",\n" +
+                    "    \"buy\": 25.9,\n" +
+                    "    \"sell\": 26.1\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"code\": \"CHF\",\n" +
+                    "    \"buy\": 25.75,\n" +
+                    "    \"sell\": 26.35\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"code\": \"EUR\",\n" +
+                    "    \"buy\": 30.2,\n" +
+                    "    \"sell\": 30.75\n" +
+                    "  }\n" +
+                    "]\n");
+            writer.flush();
+        }
         provider = new JsonCurrencyProvider();
     }
 
     @Test
     public void testGetAllRates() {
-        List <CurrencyRate> ratesFromFile = provider.getData(file);
-        for(int i=0;i<rateList.size();i++){
+        List<CurrencyRate> ratesFromFile = provider.getData(file);
+        for (int i = 0; i < rateList.size(); i++) {
             assertEquals(rateList.get(i).getCode(), ratesFromFile.get(i).getCode());
             assertEquals(rateList.get(i).getBuy(), ratesFromFile.get(i).getBuy());
             assertEquals(rateList.get(i).getSell(), ratesFromFile.get(i).getSell());
@@ -60,25 +60,25 @@ public class JsonCurrencyProviderTest {
     }
 
     @Test
-    public void testUpdateBuyPrice(){
+    public void testUpdateBuyPrice() {
         Double newValue = 999.999;
-        provider.updateBuyPrice(file,"USD",newValue);
+        provider.updateBuyPrice(file, "USD", newValue);
         CurrencyRate usdFromFile = provider.getData(file).get(0);
         assertEquals(newValue, usdFromFile.getBuy());
     }
 
     @Test
-    public void testUpdateSellPrice(){
+    public void testUpdateSellPrice() {
         Double newValue = 999.999;
-        provider.updateSellPrice(file,"CHF",newValue);
+        provider.updateSellPrice(file, "CHF", newValue);
         CurrencyRate chfFromFile = provider.getData(file).get(1);
         assertEquals(newValue, chfFromFile.getSell());
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         provider.deleteRatesForBank(file);
-        assertEquals(0,file.length());
+        assertEquals(0, file.length());
     }
 
     @After
