@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class CurrencyInMemoryService implements CurrencyService,ServletContextAware {
-    private final CurrencyRatesStorage storage;
+public class CurrencyInMemoryService implements CurrencyService, ServletContextAware {
+    private CurrencyRatesStorage storage;
     private ServletContext servletContext;
     private CurrencyProvider currencyProvider;
 
@@ -51,7 +51,7 @@ public class CurrencyInMemoryService implements CurrencyService,ServletContextAw
 
     @Override
     public Map<String, Double> getBuyPricesForCode(String code) {
-        return storage.getBuyPriceForCode(code);
+        return storage.getBuyPricesForCode(code);
     }
 
     @Override
@@ -64,8 +64,7 @@ public class CurrencyInMemoryService implements CurrencyService,ServletContextAw
         File file = FileUtils.findFileByName(servletContext, bank);
         currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
         currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
-        List<CurrencyRate> entry = currencyProvider.getData(file);
-        storage.updateSellPriceForBank(bank, entry);
+        storage.updateSellPriceForBank(bank, code, Double.valueOf(value));
     }
 
     @Override
@@ -73,8 +72,7 @@ public class CurrencyInMemoryService implements CurrencyService,ServletContextAw
         File file = FileUtils.findFileByName(servletContext, bank);
         currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
         currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
-        List<CurrencyRate> entry = currencyProvider.getData(file);
-        storage.updateBuyPriceForBank(bank, entry);
+        storage.updateBuyPriceForBank(bank, code, Double.valueOf(value));
     }
 
     @Override

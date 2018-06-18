@@ -1,7 +1,8 @@
 package com.aggregator.storage;
 
 import com.aggregator.model.CurrencyRate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -11,10 +12,14 @@ import java.util.Map;
 import java.util.Set;
 
 
-@Repository
+@Component
 public class CurrencyRatesStorage {
 
     private Map<String, List<CurrencyRate>> currencyData;
+
+    public CurrencyRatesStorage() {
+        currencyData = new HashMap<>();
+    }
 
     public CurrencyRatesStorage(Map<String, List<CurrencyRate>> currencyData) {
         this.currencyData = currencyData;
@@ -40,7 +45,7 @@ public class CurrencyRatesStorage {
         return result;
     }
 
-    public Map<String, Double> getBuyPriceForCode(String code) {
+    public Map<String, Double> getBuyPricesForCode(String code) {
         Map<String, Double> result = new HashMap<>();
         for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
             for (CurrencyRate rate : entry.getValue()) {
@@ -113,19 +118,32 @@ public class CurrencyRatesStorage {
         return list;
     }
 
-    public void updateSellPriceForBank(String bank, List<CurrencyRate> entry) {
-        currencyData.put(bank, entry);
+    public void updateSellPriceForBank(String bank, String code, Double value) {
+        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+            if (entry.getKey().equals(bank)) {
+                for (CurrencyRate rate : entry.getValue()) {
+                    if (rate != null && rate.getCode().equals(code) && rate.getSell() > 0) {
+                        rate.setSell(value);
+                        break;
+                    }
+                }
+            }
     }
 
-    public void updateBuyPriceForBank(String bank, List<CurrencyRate> entry) {
-        currencyData.put(bank, entry);
+    public void updateBuyPriceForBank(String bank, String code, Double value) {
+        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+            if (entry.getKey().equals(bank)) {
+                for (CurrencyRate rate : entry.getValue()) {
+                    if (rate != null && rate.getCode().equals(code) && rate.getBuy() > 0) {
+                        rate.setBuy(value);
+                        break;
+                    }
+                }
+            }
     }
 
     public void deleteRatesForBank(String bank) {
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet()) {
-            if (entry.getKey().equals(bank))
-                entry.getValue().clear();
-        }
+        currencyData.remove(bank);
     }
 
     public void putData(String s, List<CurrencyRate> rates) {

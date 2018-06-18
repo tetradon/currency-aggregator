@@ -86,12 +86,21 @@
                                 <totalLineRate>80</totalLineRate>
                                 <totalBranchRate>80</totalBranchRate>
                             </check>
+                            <instrumentation>
+                                <ignores>
+                                    <ignore>com.aggregator.config.*</ignore>
+                                </ignores>
+                                <excludes>
+                                    <exclude>com/aggregator/config/**/*.class</exclude>
+                                </excludes>
+                            </instrumentation>
                         </configuration>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>check</goal>
+                                    <goal>cobertura</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -123,8 +132,23 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.0</version>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 
     <dependencies>
@@ -185,9 +209,6 @@
             <artifactId>asm</artifactId>
             <version>5.0.4</version>
         </dependency>
-
-
-
 
 
         <dependency>
