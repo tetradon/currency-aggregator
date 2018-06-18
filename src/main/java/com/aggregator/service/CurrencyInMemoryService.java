@@ -22,21 +22,28 @@ public class CurrencyInMemoryService implements CurrencyService, ServletContextA
     private CurrencyRatesStorage storage;
     private ServletContext servletContext;
     private CurrencyProvider currencyProvider;
+    private File folderWithRates;
 
-    @PostConstruct
-    public void postConstruct() {
-        File folder = new File(servletContext.getRealPath("/WEB-INF/rates/"));
-        List<CurrencyRate> rates;
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
-            rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
-            storage.putData(FileUtils.stripExtension(fileEntry.getName()), rates);
-        }
+    public CurrencyInMemoryService(CurrencyRatesStorage storage, File folderWithRates) {
+        this.storage = storage;
+        this.folderWithRates = folderWithRates;
     }
 
     @Autowired
     public CurrencyInMemoryService(CurrencyRatesStorage storage) {
         this.storage = storage;
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        folderWithRates = new File(servletContext.getRealPath("/WEB-INF/rates/"));
+        List<CurrencyRate> rates;
+        for (final File fileEntry : Objects.requireNonNull(folderWithRates.listFiles())) {
+            currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
+            rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
+            storage.putData(FileUtils.stripExtension(fileEntry.getName()), rates);
+
+        }
     }
 
     @Override
@@ -61,7 +68,7 @@ public class CurrencyInMemoryService implements CurrencyService, ServletContextA
 
     @Override
     public void updateSellPriceForBank(String bank, String code, String value) {
-        File file = FileUtils.findFileByName(servletContext, bank);
+        File file = FileUtils.findFileByName(folderWithRates, bank);
         currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
         currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
         storage.updateSellPriceForBank(bank, code, Double.valueOf(value));
@@ -69,7 +76,7 @@ public class CurrencyInMemoryService implements CurrencyService, ServletContextA
 
     @Override
     public void updateBuyPriceForBank(String bank, String code, String value) {
-        File file = FileUtils.findFileByName(servletContext, bank);
+        File file = FileUtils.findFileByName(folderWithRates, bank);
         currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
         currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
         storage.updateBuyPriceForBank(bank, code, Double.valueOf(value));
@@ -77,7 +84,7 @@ public class CurrencyInMemoryService implements CurrencyService, ServletContextA
 
     @Override
     public void deleteRatesForBank(String bank) {
-        File file = FileUtils.findFileByName(servletContext, bank);
+        File file = FileUtils.findFileByName(folderWithRates, bank);
         currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
         currencyProvider.deleteRatesForBank(file);
         storage.deleteRatesForBank(bank);
