@@ -1,6 +1,5 @@
 package com.aggregator.utils;
 
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -14,9 +13,8 @@ public class FileUtils {
         return str.substring(0, pos);
     }
 
-    public static File findFileByName(ServletContext servletContext, String searchName) {
-        File f = new File(servletContext.getRealPath("/WEB-INF/rates/"));
-        File[] matchingFiles = f.listFiles((dir, name) -> name.startsWith(searchName));
+    public static File findFileByName(File folder, String searchName) {
+        File[] matchingFiles = folder.listFiles((dir, name) -> name.startsWith(searchName));
         return Objects.requireNonNull(matchingFiles)[0];
     }
 
