@@ -8,10 +8,13 @@ import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,14 +24,16 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
 
     @Override
     public List<CurrencyRate> getData(final File file) {
-        ColumnPositionMappingStrategy strategy =
-                new ColumnPositionMappingStrategy();
+        ColumnPositionMappingStrategy<CurrencyRate> strategy =
+                new ColumnPositionMappingStrategy<>();
         strategy.setType(CurrencyRate.class);
         strategy.setColumnMapping("currencyRateCode",
                 "currencyRateBuyPrice", "currencyRateSellPrice");
-        CsvToBean csv = new CsvToBean();
+        CsvToBean<CurrencyRate> csv = new CsvToBean<>();
         try {
-            resultList = csv.parse(strategy, new FileReader(file));
+            resultList = csv.parse(strategy,
+                    new InputStreamReader(new FileInputStream(file),
+                            StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -56,7 +61,9 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
                              final Double newValue, final String tag) {
         List<String[]> entries = null;
         String[] rowForDeleting = new String[1];
-        try (CSVReader reader = new CSVReader(new FileReader(file))) {
+        try (CSVReader reader = new CSVReader(
+                new InputStreamReader(
+                        new FileInputStream(file), StandardCharsets.UTF_8))) {
             entries = reader.readAll();
             for (String[] row : entries) {
                 if (row[0].equals(code)) {
@@ -64,10 +71,12 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
                 }
             }
             entries.remove(rowForDeleting);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        try (CSVWriter writer = new CSVWriter(new FileWriter(file),
+        try (CSVWriter writer = new CSVWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(file), StandardCharsets.UTF_8),
                 CSVWriter.DEFAULT_SEPARATOR,
                 CSVWriter.NO_QUOTE_CHARACTER)) {
             if (tag.equals("buy")) {
