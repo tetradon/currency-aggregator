@@ -49,14 +49,14 @@ public class CurrencyStorageTest {
     }
 
     @Test
-    public void updateNullSellRatesForCode(){
+    public void testUpdateNullSellRatesForCode(){
         storage.getAllRates().get(bankPumb).set(0, null);
         storage.updateSellPriceForBank(bankPumb,"USD",999.);
         assertTrue(storage.getSellPricesForCode("USD").isEmpty());
     }
 
     @Test
-    public void updateNullBuyRatesForCode(){
+    public void testUpdateNullBuyRatesForCode(){
         storage.getAllRates().get(bankPumb).set(1, null);
         storage.updateBuyPriceForBank(bankPumb,"RUB",999.);
         assertTrue(storage.getBuyPricesForCode("RUB").isEmpty());
@@ -69,7 +69,7 @@ public class CurrencyStorageTest {
     }
 
     @Test
-    public void getRatesForCodeWithNull(){
+    public void testGetRatesForCodeWithNull(){
         storage.putData("bank", null);
         Map<String, CurrencyRate> map = new HashMap<>();
         map.put(bankPumb, pumbUsd);
@@ -78,37 +78,37 @@ public class CurrencyStorageTest {
     }
 
     @Test
-    public void getRatesForCodeEmptyStorage(){
+    public void testGetRatesForCodeEmptyStorage(){
         storage.getAllRates().clear();
         assertTrue(storage.getRatesForCode("USD").isEmpty());
     }
 
     @Test
-    public void getBuyRatesForCodeEmptyStorage(){
+    public void testGetBuyRatesForCodeEmptyStorage(){
         storage.getAllRates().clear();
         assertTrue(storage.getBuyPricesForCode("USD").isEmpty());
     }
 
     @Test
-    public void getSellRatesForCodeEmptyStorage(){
+    public void testGetSellRatesForCodeEmptyStorage(){
         storage.getAllRates().clear();
         assertTrue(storage.getSellPricesForCode("USD").isEmpty());
     }
 
     @Test
-    public void getNullSellRatesForCode(){
+    public void testGetNullSellRatesForCode(){
         storage.getAllRates().get(bankPumb).set(0, null);
         assertTrue(storage.getSellPricesForCode("USD").isEmpty());
     }
 
     @Test
-    public void getNullBuyRatesForCode(){
+    public void testGetNullBuyRatesForCode(){
         storage.getAllRates().get(bankPumb).set(1, null);
         assertTrue(storage.getBuyPricesForCode("RUB").isEmpty());
     }
 
     @Test
-    public void getBuyPricesForCodeThatForbiddenToBuy(){
+    public void testGetBuyPricesForCodeThatForbiddenToBuy(){
         storage.putData("bank", Collections.singletonList(new CurrencyRate("CHF", 0., 123.)));
         Map<String, Double> map = new HashMap<>();
         map.put(bankPumb, pumbRub.getBuy());
@@ -117,7 +117,7 @@ public class CurrencyStorageTest {
     }
 
     @Test
-    public void getSellPricesForCodeThatForbiddenToSell(){
+    public void testGetSellPricesForCodeThatForbiddenToSell(){
         storage.putData("bank", Collections.singletonList(new CurrencyRate("CHF", 123., 0.)));
         Map<String, Double> map = new HashMap<>();
         map.put(bankPumb, pumbEur.getSell());
