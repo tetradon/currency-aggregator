@@ -42,7 +42,6 @@ public class CurrencyInMemoryService implements CurrencyService, ServletContextA
             currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
             rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
             storage.putData(FileUtils.stripExtension(fileEntry.getName()), rates);
-
         }
     }
 
