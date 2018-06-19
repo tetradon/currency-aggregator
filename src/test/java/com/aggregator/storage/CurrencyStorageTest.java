@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CurrencyStorageTest {
     private Map<String, List<CurrencyRate>> currencyData = new HashMap<>();
@@ -48,6 +49,20 @@ public class CurrencyStorageTest {
     }
 
     @Test
+    public void updateNullSellRatesForCode(){
+        storage.getAllRates().get(bankPumb).set(0, null);
+        storage.updateSellPriceForBank(bankPumb,"USD",999.);
+        assertTrue(storage.getSellPricesForCode("USD").isEmpty());
+    }
+
+    @Test
+    public void updateNullBuyRatesForCode(){
+        storage.getAllRates().get(bankPumb).set(1, null);
+        storage.updateBuyPriceForBank(bankPumb,"RUB",999.);
+        assertTrue(storage.getBuyPricesForCode("RUB").isEmpty());
+    }
+
+    @Test
     public void testDelete(){
         storage.deleteRatesForBank("pumb");
         assertEquals(0,storage.getAllRates().size());
@@ -60,6 +75,36 @@ public class CurrencyStorageTest {
         map.put(bankPumb, pumbUsd);
         map.put("bank", null);
         assertEquals(map, storage.getRatesForCode("USD"));
+    }
+
+    @Test
+    public void getRatesForCodeEmptyStorage(){
+        storage.getAllRates().clear();
+        assertTrue(storage.getRatesForCode("USD").isEmpty());
+    }
+
+    @Test
+    public void getBuyRatesForCodeEmptyStorage(){
+        storage.getAllRates().clear();
+        assertTrue(storage.getBuyPricesForCode("USD").isEmpty());
+    }
+
+    @Test
+    public void getSellRatesForCodeEmptyStorage(){
+        storage.getAllRates().clear();
+        assertTrue(storage.getSellPricesForCode("USD").isEmpty());
+    }
+
+    @Test
+    public void getNullSellRatesForCode(){
+        storage.getAllRates().get(bankPumb).set(0, null);
+        assertTrue(storage.getSellPricesForCode("USD").isEmpty());
+    }
+
+    @Test
+    public void getNullBuyRatesForCode(){
+        storage.getAllRates().get(bankPumb).set(1, null);
+        assertTrue(storage.getBuyPricesForCode("RUB").isEmpty());
     }
 
     @Test

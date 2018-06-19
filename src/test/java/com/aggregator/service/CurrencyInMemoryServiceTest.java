@@ -54,7 +54,6 @@ public class CurrencyInMemoryServiceTest {
         assertEquals(rubMap, service.getRatesForCode("RUB"));
     }
 
-
     @Test
     public void testGetBuyPricesForEur() {
         Map<String, Double> eurMap = new HashMap<>();

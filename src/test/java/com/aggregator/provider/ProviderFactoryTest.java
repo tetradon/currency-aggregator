@@ -3,7 +3,7 @@ package com.aggregator.provider;
 
 import org.junit.Test;
 
-
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ProviderFactoryTest {
@@ -18,5 +18,10 @@ public class ProviderFactoryTest {
     @Test
     public void testGetCsvProvider(){
         assertTrue(ProviderFactory.getProvider("csv") instanceof CsvCurrencyProvider);
+    }
+
+    @Test
+    public void testGetWrongProvider(){
+        assertNull(ProviderFactory.getProvider("wrong"));
     }
 }
