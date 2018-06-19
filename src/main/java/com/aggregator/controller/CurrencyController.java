@@ -46,9 +46,7 @@ public final class CurrencyController {
         } else if (tag.equals("sell")) {
             resultMap = currencyService.getSellPricesForCode(code);
         }
-        System.out.println(resultMap);
         resultMap = sortIfNeeded(sort, resultMap);
-        System.out.println(resultMap);
         return JsonResponse.getJsonFromMap(resultMap);
     }
 
