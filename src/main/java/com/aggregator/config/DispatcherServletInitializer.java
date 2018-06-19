@@ -12,7 +12,7 @@ import javax.servlet.ServletRegistration;
 public class DispatcherServletInitializer implements WebApplicationInitializer {
 
     @Override
-    public void onStartup(ServletContext servletContext) {
+    public final void onStartup(final ServletContext servletContext) {
         AnnotationConfigWebApplicationContext context
                 = new AnnotationConfigWebApplicationContext();
         context.setConfigLocation("com.aggregator.config");
@@ -27,7 +27,9 @@ public class DispatcherServletInitializer implements WebApplicationInitializer {
         registerHiddenFieldFilter(servletContext);
     }
 
-    private void registerHiddenFieldFilter(ServletContext context) {
-        context.addFilter("hiddenHttpMethodFilter", new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null, true, "/*");
+    private void registerHiddenFieldFilter(final ServletContext context) {
+        context.addFilter("hiddenHttpMethodFilter",
+                new HiddenHttpMethodFilter())
+                .addMappingForUrlPatterns(null, true, "/*");
     }
 }

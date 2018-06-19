@@ -17,17 +17,21 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class JsonCurrencyProvider implements CurrencyProvider {
+public final class JsonCurrencyProvider implements CurrencyProvider {
     private static ArrayList<CurrencyRate> resultList;
 
-    public List<CurrencyRate> getData(File file) {
+    public List<CurrencyRate> getData(final File file) {
         resultList = new ArrayList<>();
-        if(file.length() != 0) {
+        if (file.length() != 0) {
             ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+            mapper
+                    .configure(DeserializationFeature
+                            .ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             try {
-                resultList = mapper.readValue(file, new TypeReference<Collection<CurrencyRate>>() {
-                });
+                resultList = mapper
+                        .readValue(file,
+                                new TypeReference<Collection<CurrencyRate>>() {
+                                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -35,21 +39,24 @@ public class JsonCurrencyProvider implements CurrencyProvider {
         return resultList;
     }
 
-    public void updateBuyPrice(File file, String code, Double newValue) {
+    public void updateBuyPrice(final File file, final String code,
+                               final Double newValue) {
         updatePrice(file, code, newValue, "buy");
     }
 
-    public void updateSellPrice(File file, String code, Double newValue) {
+    public void updateSellPrice(final File file, final String code,
+                                final Double newValue) {
         updatePrice(file, code, newValue, "sell");
     }
 
 
     @Override
-    public void deleteRatesForBank(File file) {
+    public void deleteRatesForBank(final File file) {
         FileUtils.deleteContentOfFile(file);
     }
 
-    private void updatePrice(File file, String code, Double newValue, String tag) {
+    private void updatePrice(final File file, final String code,
+                             final Double newValue, final String tag) {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -67,6 +74,5 @@ public class JsonCurrencyProvider implements CurrencyProvider {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

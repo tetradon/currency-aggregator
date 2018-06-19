@@ -11,70 +11,86 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class CurrencyController {
-    private final CurrencyService service;
+public final class CurrencyController {
+    private final CurrencyService currencyService;
 
     @Autowired
-    public CurrencyController(CurrencyService service) {
-        this.service = service;
+    public CurrencyController(final CurrencyService service) {
+        this.currencyService = service;
     }
 
     @GetMapping(value = {"", "/"}, produces = "application/json")
     public String getRates() {
-        return JsonResponse.getJsonFromMap(service.getAllRates());
+        return JsonResponse.getJsonFromMap(currencyService.getAllRates());
     }
 
     @GetMapping(value = "/{code}", produces = "application/json")
-    public String getRatesForCode(@PathVariable(value = "code") String code) {
-        return JsonResponse.getJsonFromMap(service.getRatesForCode(code));
+    public String getRatesForCode(final @PathVariable(value = "code")
+                                              String code) {
+        return JsonResponse
+                .getJsonFromMap(currencyService.getRatesForCode(code));
     }
 
     @GetMapping(value = "/{code}/{tag}", produces = "application/json")
-    public String getBuyPrices(@PathVariable(value = "code") String code,
-                               @PathVariable("tag") String tag,
-                               @RequestParam(value = "sort", required = false) String sort) {
+    public String getBuyPrices(final @PathVariable(value = "code") String code,
+                               final @PathVariable("tag") String tag,
+                               final @RequestParam(value = "sort",
+                                       required = false) String sort) {
         Map<String, Double> resultMap = null;
-        if (tag.equals("buy"))
-            resultMap = service.getBuyPricesForCode(code);
-        else if (tag.equals("sell"))
-            resultMap = service.getSellPricesForCode(code);
+        if (tag.equals("buy")) {
+            resultMap = currencyService.getBuyPricesForCode(code);
+        } else if (tag.equals("sell")) {
+            resultMap = currencyService.getSellPricesForCode(code);
+        }
+        System.out.println(resultMap);
         resultMap = sortIfNeeded(sort, resultMap);
+        System.out.println(resultMap);
         return JsonResponse.getJsonFromMap(resultMap);
     }
 
     @PutMapping(value = "/{code}/{tag}", produces = "application/json")
-    public String updateSellPrice(@PathVariable("code") String code,
-                                  @PathVariable("tag") String tag,
-                                  @RequestParam("value") String value,
-                                  @RequestParam("bank") String bank) {
-        if (tag.equals("buy"))
-            service.updateBuyPriceForBank(bank, code, value);
-        else if (tag.equals("sell"))
-            service.updateSellPriceForBank(bank, code, value);
-        return JsonResponse.okResponse;
+    public String updateSellPrice(final @PathVariable("code") String code,
+                                  final @PathVariable("tag") String tag,
+                                  final @RequestParam("value") String value,
+                                  final @RequestParam("bank") String bank) {
+        if (tag.equals("buy")) {
+            currencyService.updateBuyPriceForBank(bank, code, value);
+        } else if (tag.equals("sell")) {
+            currencyService.updateSellPriceForBank(bank, code, value);
+        }
+        return JsonResponse.OK_RESPONSE;
 
     }
 
     @DeleteMapping(value = "/", produces = "application/json")
-    public String deleteRatesForBank(@RequestParam("bank") String bank) {
-        service.deleteRatesForBank(bank);
-        return JsonResponse.okResponse;
+    public String deleteRatesForBank(final @RequestParam("bank") String bank) {
+        currencyService.deleteRatesForBank(bank);
+        return JsonResponse.OK_RESPONSE;
     }
 
     @GetMapping(value = "/report", produces = "application/json")
     public String report() {
-        return JsonResponse.getJsonFromMap(service.getBestPropositions());
+        return JsonResponse.
+                getJsonFromMap(currencyService.getBestPropositions());
     }
 
-    private Map<String, Double> sortIfNeeded(@RequestParam(value = "sort", required = false) String sort, Map<String, Double> resultMap) {
-        if (sort != null && sort.equals("asc")) {
-            resultMap = SortMapUtils.sortAsc(resultMap);
-        } else if (sort != null && sort.equals("desc")) {
-            resultMap = SortMapUtils.sortDesc(resultMap);
+    private Map<String, Double> sortIfNeeded(
+            @RequestParam(value = "sort", required = false)
+                    final String sort,
+                    final Map<String, Double> unsortedMap) {
+        if (sort != null) {
+            Map<String, Double> sortedMap = new HashMap<>();
+            if (sort.equals("asc")) {
+                sortedMap = SortMapUtils.sortAsc(unsortedMap);
+            } else if (sort.equals("desc")) {
+                sortedMap = SortMapUtils.sortDesc(unsortedMap);
+            }
+            return sortedMap;
         }
-        return resultMap;
+        return unsortedMap;
     }
 }

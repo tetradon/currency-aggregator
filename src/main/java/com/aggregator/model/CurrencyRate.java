@@ -1,68 +1,78 @@
 package com.aggregator.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
-public class CurrencyRate {
+public final class CurrencyRate {
 
+    @JsonProperty("code")
+    private String currencyRateCode;
 
-    private String code;
-    private Double buy;
-    private Double sell;
+    @JsonProperty("buy")
+    private Double currencyRateBuyPrice;
 
+    @JsonProperty("sell")
+    private Double currencyRateSellPrice;
 
     public CurrencyRate() {
     }
 
-    public CurrencyRate(String code, Double buy, Double sell) {
-        this.code = code;
-        this.buy = buy;
-        this.sell = sell;
+    public CurrencyRate(final String code,
+                        final Double buy,
+                        final Double sell) {
+        this.currencyRateCode = code;
+        this.currencyRateBuyPrice = buy;
+        this.currencyRateSellPrice = sell;
     }
 
-
-    public Double getBuy() {
-        return buy;
+    public Double getCurrencyRateBuyPrice() {
+        return currencyRateBuyPrice;
     }
 
-    public void setBuy(Double buy) {
-        this.buy = buy;
+    public void setCurrencyRateBuyPrice(final Double buy) {
+        currencyRateBuyPrice = buy;
     }
 
-    public Double getSell() {
-        return sell;
+    public Double getCurrencyRateSellPrice() {
+        return currencyRateSellPrice;
     }
 
-    public void setSell(Double sell) {
-        this.sell = sell;
+    public void setCurrencyRateSellPrice(final Double sell) {
+        currencyRateSellPrice = sell;
     }
 
-    public String getCode() {
-        return code;
+    public String getCurrencyRateCode() {
+        return currencyRateCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCurrencyRateCode(final String code) {
+        currencyRateCode = code;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CurrencyRate that = (CurrencyRate) o;
-        return Objects.equals(code, that.code);
+        return Objects.equals(currencyRateCode, that.currencyRateCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code);
+        return Objects.hash(currencyRateCode);
     }
 
     @Override
     public String toString() {
-        return "CurrencyRate{" +
-                "code='" + code + '\'' +
-                ", buy=" + buy +
-                ", sell=" + sell +
-                '}';
+        return "CurrencyRate{"
+                + "currencyRateCode='" + currencyRateCode + '\''
+                + ", currencyRateBuyPrice=" + currencyRateBuyPrice
+                + ", currencyRateSellPrice=" + currencyRateSellPrice
+                + '}';
     }
 }

@@ -3,6 +3,7 @@ package com.aggregator.controller;
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.service.CurrencyService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -58,22 +59,22 @@ public class CurrencyControllerTest {
         rubRateMap.put(bank, rubRate);
 
         HashMap<String, Double> rubBuyRatesMap = new HashMap<>();
-        rubBuyRatesMap.put(bank, rubRate.getBuy());
+        rubBuyRatesMap.put(bank, rubRate.getCurrencyRateBuyPrice());
 
         HashMap<String, Double> usdSellRatesMap = new HashMap<>();
-        usdSellRatesMap.put(bank, usdRate.getSell());
+        usdSellRatesMap.put(bank, usdRate.getCurrencyRateSellPrice());
 
         Map<String, Map<String, Map.Entry<String, Double>>> report = new HashMap<>();
 
-        Map.Entry<String, Double> bankBuyUSDEntry = new AbstractMap.SimpleEntry<>(bank, usdRate.getBuy());
-        Map.Entry<String, Double> bankSellUSDEntry = new AbstractMap.SimpleEntry<>(bank, usdRate.getSell());
+        Map.Entry<String, Double> bankBuyUSDEntry = new AbstractMap.SimpleEntry<>(bank, usdRate.getCurrencyRateBuyPrice());
+        Map.Entry<String, Double> bankSellUSDEntry = new AbstractMap.SimpleEntry<>(bank, usdRate.getCurrencyRateSellPrice());
         Map<String, Map.Entry<String, Double>> mapUSDEntry = new HashMap<>();
         mapUSDEntry.put("buy", bankBuyUSDEntry);
         mapUSDEntry.put("sell", bankSellUSDEntry);
         report.put("USD", mapUSDEntry);
 
-        Map.Entry<String, Double> bankBuyRUBEntry = new AbstractMap.SimpleEntry<>(bank, rubRate.getBuy());
-        Map.Entry<String, Double> bankSellRUBEntry = new AbstractMap.SimpleEntry<>(bank, rubRate.getSell());
+        Map.Entry<String, Double> bankBuyRUBEntry = new AbstractMap.SimpleEntry<>(bank, rubRate.getCurrencyRateBuyPrice());
+        Map.Entry<String, Double> bankSellRUBEntry = new AbstractMap.SimpleEntry<>(bank, rubRate.getCurrencyRateSellPrice());
         Map<String, Map.Entry<String, Double>> mapRUBEntry = new HashMap<>();
         mapRUBEntry.put("buy", bankBuyRUBEntry);
         mapRUBEntry.put("sell", bankSellRUBEntry);
@@ -108,9 +109,9 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/RUB"))
                 .andExpect(status().isOk())
                 .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
         assertEquals("{\"pumb\":{\"code\":\"RUB\",\"buy\":0.4,\"sell\":0.5}}" , result.getResponse().getContentAsString());
     }
+
 
     @Test
     public void testGetRUBBuyPrices() throws Exception {
@@ -178,5 +179,4 @@ public class CurrencyControllerTest {
                 .andReturn();
         assertEquals("{\"pumb\":0.4}", result.getResponse().getContentAsString());
     }
-
 }

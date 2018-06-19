@@ -57,16 +57,16 @@ public class CurrencyInMemoryServiceTest {
     @Test
     public void testGetBuyPricesForEur() {
         Map<String, Double> eurMap = new HashMap<>();
-        eurMap.put(bankPumb, pumbEur.getBuy());
-        eurMap.put(bankAval, avalEur.getBuy());
+        eurMap.put(bankPumb, pumbEur.getCurrencyRateBuyPrice());
+        eurMap.put(bankAval, avalEur.getCurrencyRateBuyPrice());
         assertEquals(eurMap, service.getBuyPricesForCode("EUR"));
     }
 
     @Test
     public void testGetSellPricesForUSD() {
         Map<String, Double> usdMap = new HashMap<>();
-        usdMap.put(bankPumb, pumbUsd.getSell());
-        usdMap.put(bankAval, avalUsd.getSell());
+        usdMap.put(bankPumb, pumbUsd.getCurrencyRateSellPrice());
+        usdMap.put(bankAval, avalUsd.getCurrencyRateSellPrice());
         assertEquals(usdMap, service.getSellPricesForCode("USD"));
     }
 
@@ -74,22 +74,22 @@ public class CurrencyInMemoryServiceTest {
     public void testGetBestPropositions() {
         Map<String, Map<String, Map.Entry<String, Double>>> report = new HashMap<>();
 
-        Map.Entry<String, Double> buyUSDEntry = new AbstractMap.SimpleEntry<>(bankAval, avalUsd.getBuy());
-        Map.Entry<String, Double> sellUSDEntry = new AbstractMap.SimpleEntry<>(bankPumb, pumbUsd.getSell());
+        Map.Entry<String, Double> buyUSDEntry = new AbstractMap.SimpleEntry<>(bankAval, avalUsd.getCurrencyRateBuyPrice());
+        Map.Entry<String, Double> sellUSDEntry = new AbstractMap.SimpleEntry<>(bankPumb, pumbUsd.getCurrencyRateSellPrice());
         Map<String, Map.Entry<String, Double>> mapUSDEntry = new HashMap<>();
         mapUSDEntry.put("buy", buyUSDEntry);
         mapUSDEntry.put("sell", sellUSDEntry);
         report.put("USD", mapUSDEntry);
 
-        Map.Entry<String, Double> buyRUBEntry = new AbstractMap.SimpleEntry<>(bankPumb, pumbRub.getBuy());
-        Map.Entry<String, Double> sellRUBEntry = new AbstractMap.SimpleEntry<>(bankPumb, pumbRub.getSell());
+        Map.Entry<String, Double> buyRUBEntry = new AbstractMap.SimpleEntry<>(bankPumb, pumbRub.getCurrencyRateBuyPrice());
+        Map.Entry<String, Double> sellRUBEntry = new AbstractMap.SimpleEntry<>(bankPumb, pumbRub.getCurrencyRateSellPrice());
         Map<String, Map.Entry<String, Double>> mapRUBEntry = new HashMap<>();
         mapRUBEntry.put("buy", buyRUBEntry);
         mapRUBEntry.put("sell", sellRUBEntry);
         report.put("RUB", mapRUBEntry);
 
-        Map.Entry<String, Double> buyEUREntry = new AbstractMap.SimpleEntry<>(bankAval, avalEur.getBuy());
-        Map.Entry<String, Double> sellEUREntry = new AbstractMap.SimpleEntry<>(bankAval, avalEur.getSell());
+        Map.Entry<String, Double> buyEUREntry = new AbstractMap.SimpleEntry<>(bankAval, avalEur.getCurrencyRateBuyPrice());
+        Map.Entry<String, Double> sellEUREntry = new AbstractMap.SimpleEntry<>(bankAval, avalEur.getCurrencyRateSellPrice());
         Map<String, Map.Entry<String, Double>> mapEUREntry = new HashMap<>();
         mapEUREntry.put("buy", buyEUREntry);
         mapEUREntry.put("sell", sellEUREntry);

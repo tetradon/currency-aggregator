@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class XmlCurrencyProvider implements CurrencyProvider {
+public final class XmlCurrencyProvider implements CurrencyProvider {
 
     private static ArrayList<CurrencyRate> resultList;
 
-    private static void nextNode(Node node) {
+    private static void nextNode(final Node node) {
         if (node != null) {
             int type = node.getNodeType();
             switch (type) {
@@ -29,23 +29,29 @@ public class XmlCurrencyProvider implements CurrencyProvider {
                 case Node.ELEMENT_NODE:
                     if (node.getNodeName().equals("rate")) {
                         String code = DomUtils.getChildValue(node, "code");
-                        Double buy = Double.valueOf(Objects.requireNonNull(DomUtils.getChildValue(node, "buy")));
-                        Double sell = Double.valueOf(Objects.requireNonNull(DomUtils.getChildValue(node, "sell")));
+                        Double buy = Double.valueOf(Objects.
+                                requireNonNull(DomUtils.getChildValue(node,
+                                        "buy")));
+                        Double sell = Double.valueOf(Objects.
+                                requireNonNull(DomUtils.getChildValue(node,
+                                        "sell")));
                         resultList.add(new CurrencyRate(code, buy, sell));
                     }
                     passChild(node);
                     break;
+                default: break;
             }
         }
     }
 
-    private static void passChild(Node nd) {
+    private static void passChild(final Node nd) {
         NodeList childNodes = nd.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++)
+        for (int i = 0; i < childNodes.getLength(); i++) {
             nextNode(childNodes.item(i));
+        }
     }
 
-    public List<CurrencyRate> getData(File file) {
+    public List<CurrencyRate> getData(final File file) {
         resultList = new ArrayList<>();
         if (file.length() != 0) {
             Document doc = DomUtils.createDocument(file);
@@ -54,15 +60,18 @@ public class XmlCurrencyProvider implements CurrencyProvider {
         return resultList;
     }
 
-    public void updateBuyPrice(File file, String code, Double newValue) {
+    public void updateBuyPrice(final File file, final String code,
+                               final Double newValue) {
         updatePrice(file, code, newValue, "buy");
     }
 
-    public void updateSellPrice(File file, String code, Double newValue) {
+    public void updateSellPrice(final File file, final String code,
+                                final Double newValue) {
         updatePrice(file, code, newValue, "sell");
     }
 
-    private void updatePrice(File file, String code, Double newValue, String tag) {
+    private void updatePrice(final File file, final String code,
+                             final Double newValue, final String tag) {
         Document doc = DomUtils.createDocument(file);
         NodeList rates = doc.getElementsByTagName("rate");
         Element element;
@@ -82,7 +91,7 @@ public class XmlCurrencyProvider implements CurrencyProvider {
         }
     }
 
-    public void deleteRatesForBank(File file) {
+    public void deleteRatesForBank(final File file) {
         FileUtils.deleteContentOfFile(file);
     }
 }

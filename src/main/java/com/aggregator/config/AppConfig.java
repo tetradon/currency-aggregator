@@ -15,7 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class AppConfig implements WebMvcConfigurer {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public final void addResourceHandlers(
+            final ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/rates/**")
                 .addResourceLocations("/rates/");

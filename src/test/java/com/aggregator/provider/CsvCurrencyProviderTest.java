@@ -41,9 +41,9 @@ public class CsvCurrencyProviderTest {
     public void testGetAllRates() {
         List<CurrencyRate> ratesFromFile = provider.getData(file);
         for (int i = 0; i < rateList.size(); i++) {
-            assertEquals(rateList.get(i).getCode(), ratesFromFile.get(i).getCode());
-            assertEquals(rateList.get(i).getBuy(), ratesFromFile.get(i).getBuy());
-            assertEquals(rateList.get(i).getSell(), ratesFromFile.get(i).getSell());
+            assertEquals(rateList.get(i).getCurrencyRateCode(), ratesFromFile.get(i).getCurrencyRateCode());
+            assertEquals(rateList.get(i).getCurrencyRateBuyPrice(), ratesFromFile.get(i).getCurrencyRateBuyPrice());
+            assertEquals(rateList.get(i).getCurrencyRateSellPrice(), ratesFromFile.get(i).getCurrencyRateSellPrice());
         }
     }
 
@@ -53,7 +53,7 @@ public class CsvCurrencyProviderTest {
         provider.updateBuyPrice(file, "USD", newValue);
         int indexOfUpdatedValue = provider.getData(file).size() - 1;
         CurrencyRate usdFromFile = provider.getData(file).get(indexOfUpdatedValue);
-        assertEquals(newValue, usdFromFile.getBuy());
+        assertEquals(newValue, usdFromFile.getCurrencyRateBuyPrice());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class CsvCurrencyProviderTest {
         provider.updateSellPrice(file, "RUB", newValue);
         int indexOfUpdatedValue = provider.getData(file).size() - 1;
         CurrencyRate rubFromFile = provider.getData(file).get(indexOfUpdatedValue);
-        assertEquals(newValue, rubFromFile.getSell());
+        assertEquals(newValue, rubFromFile.getCurrencyRateSellPrice());
     }
 
     @Test

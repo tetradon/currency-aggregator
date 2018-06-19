@@ -13,7 +13,7 @@ import java.util.Set;
 
 
 @Component
-public class CurrencyRatesStorage {
+public final class CurrencyRatesStorage {
 
     private Map<String, List<CurrencyRate>> currencyData;
 
@@ -21,57 +21,71 @@ public class CurrencyRatesStorage {
         currencyData = new HashMap<>();
     }
 
-    public CurrencyRatesStorage(Map<String, List<CurrencyRate>> currencyData) {
-        this.currencyData = currencyData;
+    public CurrencyRatesStorage(final Map<String, List<CurrencyRate>> data) {
+        this.currencyData = data;
     }
 
     public Map<String, List<CurrencyRate>> getAllRates() {
         return currencyData;
     }
 
-    public Map<String, CurrencyRate> getRatesForCode(String code) {
+    public Map<String, CurrencyRate> getRatesForCode(final String code) {
         Map<String, CurrencyRate> result = new HashMap<>();
 
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
-            if (entry.getValue() == null)
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
+            if (entry.getValue() == null) {
                 result.put(entry.getKey(), null);
-            else
+            } else {
                 for (CurrencyRate rate : entry.getValue()) {
-                    if (rate.getCode().equals(code)) {
+                    if (rate.getCurrencyRateCode().equals(code)) {
                         result.put(entry.getKey(), rate);
                         break;
                     }
                 }
+            }
+        }
         return result;
     }
 
-    public Map<String, Double> getBuyPricesForCode(String code) {
+    public Map<String, Double> getBuyPricesForCode(final String code) {
         Map<String, Double> result = new HashMap<>();
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
             for (CurrencyRate rate : entry.getValue()) {
-                if (rate != null && rate.getCode().equals(code) && rate.getBuy() > 0) {
-                    result.put(entry.getKey(), rate.getBuy());
+                if (rate != null
+                        && rate.getCurrencyRateCode().equals(code)
+                        && rate.getCurrencyRateBuyPrice() > 0) {
+                    result.put(entry.getKey(), rate.getCurrencyRateBuyPrice());
                     break;
                 }
             }
+        }
         return result;
     }
 
-    public Map<String, Double> getSellPricesForCode(String code) {
+    public Map<String, Double> getSellPricesForCode(final String code) {
         Map<String, Double> result = new HashMap<>();
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
-            for (CurrencyRate rate : entry.getValue()) {
-                if (rate != null && rate.getCode().equals(code) && rate.getSell() > 0) {
-                    result.put(entry.getKey(), rate.getSell());
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
+            for (CurrencyRate rate
+                    : entry.getValue()) {
+                if (rate != null
+                        && rate.getCurrencyRateCode().equals(code)
+                        && rate.getCurrencyRateSellPrice() > 0) {
+                    result.put(entry.getKey(), rate.getCurrencyRateSellPrice());
                     break;
                 }
             }
+        }
         return result;
     }
 
-    public Map<String, Map<String, Map.Entry<String, Double>>> getBestPropositions() {
+    public Map<String,
+            Map<String, Map.Entry<String, Double>>> getBestPropositions() {
         //{code, {buy:{bank, value},sell:{bank,value}}}
-        Map<String, Map<String, Map.Entry<String, Double>>> result = new HashMap<>();
+        Map<String, Map<String, Map.Entry<String, Double>>> result
+                = new HashMap<>();
         Set<String> codes = getAllCodes();
 
         for (String code : codes) {
@@ -79,27 +93,35 @@ public class CurrencyRatesStorage {
             String maxBuyBank = "";
             Double minSell = Double.MAX_VALUE;
             String minSellBank = "";
-            for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+            for (Map.Entry<String, List<CurrencyRate>> entry
+                    : currencyData.entrySet()) {
                 for (CurrencyRate rate : entry.getValue()) {
-                    if (rate.getCode().equals(code)) {
+                    if (rate.getCurrencyRateCode().equals(code)) {
 
-                        if (rate.getBuy() >= maxBuy) {
-                            maxBuy = rate.getBuy();
+                        if (rate.getCurrencyRateBuyPrice() >= maxBuy) {
+                            maxBuy = rate.getCurrencyRateBuyPrice();
                             maxBuyBank = entry.getKey();
                         }
 
-                        if (rate.getSell() <= minSell) {
-                            minSell = rate.getSell();
+                        if (rate.getCurrencyRateSellPrice() <= minSell) {
+                            minSell = rate.getCurrencyRateSellPrice();
                             minSellBank = entry.getKey();
                         }
                     }
                 }
+            }
 
-            if (maxBuy.equals(Double.MIN_VALUE)) maxBuy = 0.;
-            if (minSell.equals(Double.MAX_VALUE)) minSell = 0.;
+            if (maxBuy.equals(Double.MIN_VALUE)) {
+                maxBuy = 0.;
+            }
+            if (minSell.equals(Double.MAX_VALUE)) {
+                minSell = 0.;
+            }
 
-            Map.Entry<String, Double> bankBuyEntry = new AbstractMap.SimpleEntry<>(maxBuyBank, maxBuy);
-            Map.Entry<String, Double> bankSellEntry = new AbstractMap.SimpleEntry<>(minSellBank, minSell);
+            Map.Entry<String, Double> bankBuyEntry =
+                    new AbstractMap.SimpleEntry<>(maxBuyBank, maxBuy);
+            Map.Entry<String, Double> bankSellEntry =
+                    new AbstractMap.SimpleEntry<>(minSellBank, minSell);
             Map<String, Map.Entry<String, Double>> mapEntry = new HashMap<>();
             mapEntry.put("buy", bankBuyEntry);
             mapEntry.put("sell", bankSellEntry);
@@ -111,42 +133,54 @@ public class CurrencyRatesStorage {
 
     private Set<String> getAllCodes() {
         Set<String> list = new HashSet<>();
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
             for (CurrencyRate rate : entry.getValue()) {
-                list.add(rate.getCode());
+                list.add(rate.getCurrencyRateCode());
             }
+        }
         return list;
     }
 
-    public void updateSellPriceForBank(String bank, String code, Double value) {
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+    public void updateSellPriceForBank(final String bank, final String code,
+                                       final Double value) {
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
             if (entry.getKey().equals(bank)) {
                 for (CurrencyRate rate : entry.getValue()) {
-                    if (rate != null && rate.getCode().equals(code) && rate.getSell() > 0) {
-                        rate.setSell(value);
+                    if (rate != null
+                            && rate.getCurrencyRateCode().equals(code)
+                            && rate.getCurrencyRateSellPrice() > 0) {
+                        rate.setCurrencyRateSellPrice(value);
                         break;
                     }
                 }
             }
+        }
     }
 
-    public void updateBuyPriceForBank(String bank, String code, Double value) {
-        for (Map.Entry<String, List<CurrencyRate>> entry : currencyData.entrySet())
+    public void updateBuyPriceForBank(final String bank, final String code,
+                                      final Double value) {
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
             if (entry.getKey().equals(bank)) {
                 for (CurrencyRate rate : entry.getValue()) {
-                    if (rate != null && rate.getCode().equals(code) && rate.getBuy() > 0) {
-                        rate.setBuy(value);
+                    if (rate != null
+                            && rate.getCurrencyRateCode().equals(code)
+                            && rate.getCurrencyRateBuyPrice() > 0) {
+                        rate.setCurrencyRateBuyPrice(value);
                         break;
                     }
                 }
             }
+        }
     }
 
-    public void deleteRatesForBank(String bank) {
+    public void deleteRatesForBank(final String bank) {
         currencyData.remove(bank);
     }
 
-    public void putData(String s, List<CurrencyRate> rates) {
+    public void putData(final String s, final List<CurrencyRate> rates) {
         currencyData.put(s, rates);
     }
 }

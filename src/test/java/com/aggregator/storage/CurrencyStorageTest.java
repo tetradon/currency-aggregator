@@ -69,6 +69,20 @@ public class CurrencyStorageTest {
     }
 
     @Test
+    public void testGetBuyRatesForUSD(){
+        Map<String, Double> map = new HashMap<>();
+        map.put(bankPumb, pumbUsd.getCurrencyRateBuyPrice());
+        assertEquals(map, storage.getBuyPricesForCode("USD"));
+    }
+
+    @Test
+    public void testGetSellRatesForUSD(){
+        Map<String, Double> map = new HashMap<>();
+        map.put(bankPumb, pumbUsd.getCurrencyRateSellPrice());
+        assertEquals(map, storage.getSellPricesForCode("USD"));
+    }
+
+    @Test
     public void testGetRatesForCodeWithNull(){
         storage.putData("bank", null);
         Map<String, CurrencyRate> map = new HashMap<>();
@@ -111,7 +125,7 @@ public class CurrencyStorageTest {
     public void testGetBuyPricesForCodeThatForbiddenToBuy(){
         storage.putData("bank", Collections.singletonList(new CurrencyRate("CHF", 0., 123.)));
         Map<String, Double> map = new HashMap<>();
-        map.put(bankPumb, pumbRub.getBuy());
+        map.put(bankPumb, pumbRub.getCurrencyRateBuyPrice());
         assertEquals(map, storage.getBuyPricesForCode("RUB"));
 
     }
@@ -120,7 +134,7 @@ public class CurrencyStorageTest {
     public void testGetSellPricesForCodeThatForbiddenToSell(){
         storage.putData("bank", Collections.singletonList(new CurrencyRate("CHF", 123., 0.)));
         Map<String, Double> map = new HashMap<>();
-        map.put(bankPumb, pumbEur.getSell());
+        map.put(bankPumb, pumbEur.getCurrencyRateSellPrice());
         assertEquals(map, storage.getSellPricesForCode("EUR"));
     }
 }

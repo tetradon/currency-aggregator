@@ -18,84 +18,100 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class CurrencyInMemoryService implements CurrencyService, ServletContextAware {
-    private CurrencyRatesStorage storage;
+public final class CurrencyInMemoryService
+        implements CurrencyService, ServletContextAware {
+    private CurrencyRatesStorage currencyRatesStorage;
     private ServletContext servletContext;
     private CurrencyProvider currencyProvider;
     private File folderWithRates;
 
-    public CurrencyInMemoryService(CurrencyRatesStorage storage, File folderWithRates) {
-        this.storage = storage;
-        this.folderWithRates = folderWithRates;
+    public CurrencyInMemoryService(final CurrencyRatesStorage storage,
+                                   final File folder) {
+        currencyRatesStorage = storage;
+        folderWithRates = folder;
     }
 
     @Autowired
-    public CurrencyInMemoryService(CurrencyRatesStorage storage) {
-        this.storage = storage;
+    public CurrencyInMemoryService(final CurrencyRatesStorage storage) {
+        currencyRatesStorage = storage;
     }
 
     @PostConstruct
     public void postConstruct() {
-        folderWithRates = new File(servletContext.getRealPath("/WEB-INF/rates/"));
+        folderWithRates = new File(
+                servletContext.getRealPath("/WEB-INF/rates/"));
         List<CurrencyRate> rates;
-        for (final File fileEntry : Objects.requireNonNull(folderWithRates.listFiles())) {
-            currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
+        for (final File fileEntry
+                : Objects.requireNonNull(
+                        folderWithRates.listFiles())) {
+            currencyProvider = ProviderFactory
+                    .getProvider(FileUtils.getExtension(fileEntry));
             rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
-            storage.putData(FileUtils.stripExtension(fileEntry.getName()), rates);
+            currencyRatesStorage
+                    .putData(FileUtils
+                            .stripExtension(fileEntry.getName()), rates);
         }
     }
 
     @Override
-    public Map<String, CurrencyRate> getRatesForCode(String code) {
-        return storage.getRatesForCode(code);
+    public Map<String, CurrencyRate> getRatesForCode(final String code) {
+        return currencyRatesStorage.getRatesForCode(code);
     }
 
     @Override
     public Map<String, List<CurrencyRate>> getAllRates() {
-        return storage.getAllRates();
+        return currencyRatesStorage.getAllRates();
     }
 
     @Override
-    public Map<String, Double> getBuyPricesForCode(String code) {
-        return storage.getBuyPricesForCode(code);
+    public Map<String, Double> getBuyPricesForCode(final String code) {
+        return currencyRatesStorage.getBuyPricesForCode(code);
     }
 
     @Override
-    public Map<String, Double> getSellPricesForCode(String code) {
-        return storage.getSellPricesForCode(code);
+    public Map<String, Double> getSellPricesForCode(final String code) {
+        return currencyRatesStorage.getSellPricesForCode(code);
     }
 
     @Override
-    public void updateSellPriceForBank(String bank, String code, String value) {
+    public void updateSellPriceForBank(final String bank, final String code,
+                                       final String value) {
         File file = FileUtils.findFileByName(folderWithRates, bank);
-        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
+        currencyProvider = ProviderFactory
+                .getProvider(FileUtils.getExtension(file));
         currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
-        storage.updateSellPriceForBank(bank, code, Double.valueOf(value));
+        currencyRatesStorage
+                .updateSellPriceForBank(bank, code, Double.valueOf(value));
     }
 
     @Override
-    public void updateBuyPriceForBank(String bank, String code, String value) {
+    public void updateBuyPriceForBank(final String bank, final String code,
+                                      final String value) {
         File file = FileUtils.findFileByName(folderWithRates, bank);
-        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
+        currencyProvider = ProviderFactory
+                .getProvider(FileUtils.getExtension(file));
         currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
-        storage.updateBuyPriceForBank(bank, code, Double.valueOf(value));
+        currencyRatesStorage
+                .updateBuyPriceForBank(bank, code, Double.valueOf(value));
     }
 
     @Override
-    public void deleteRatesForBank(String bank) {
+    public void deleteRatesForBank(final String bank) {
         File file = FileUtils.findFileByName(folderWithRates, bank);
-        currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(file));
+        currencyProvider = ProviderFactory
+                .getProvider(FileUtils.getExtension(file));
         currencyProvider.deleteRatesForBank(file);
-        storage.deleteRatesForBank(bank);
+        currencyRatesStorage.deleteRatesForBank(bank);
     }
 
     @Override
-    public Map<String, Map<String, Map.Entry<String, Double>>> getBestPropositions() {
-        return storage.getBestPropositions();
+    public Map<String,
+            Map<String, Map.Entry<String, Double>>> getBestPropositions() {
+        return currencyRatesStorage.getBestPropositions();
     }
 
     @Override
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
+    public void setServletContext(final ServletContext context) {
+        servletContext = context;
     }
 }

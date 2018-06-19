@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-public class JsonResponse {
-    public final static String okResponse = "{\"status\" : \"ok\"}";
+public final class JsonResponse {
+    public static final  String OK_RESPONSE = "{\"status\" : \"ok\"}";
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static String getJsonFromMap(Map map) {
+    private JsonResponse() {
+    }
+
+    public static String getJsonFromMap(final Map map) {
         String response = "";
         try {
             response = mapper.writeValueAsString(map);
@@ -19,6 +22,4 @@ public class JsonResponse {
         }
         return response;
     }
-
-
 }

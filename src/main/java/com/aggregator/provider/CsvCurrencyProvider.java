@@ -16,14 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CsvCurrencyProvider implements CurrencyProvider {
+public final class CsvCurrencyProvider implements CurrencyProvider {
     private static List<CurrencyRate> resultList = new ArrayList<>();
 
     @Override
-    public List<CurrencyRate> getData(File file) {
-        ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
+    public List<CurrencyRate> getData(final File file) {
+        ColumnPositionMappingStrategy strategy =
+                new ColumnPositionMappingStrategy();
         strategy.setType(CurrencyRate.class);
-        strategy.setColumnMapping("code", "buy", "sell");
+        strategy.setColumnMapping("currencyRateCode",
+                "currencyRateBuyPrice", "currencyRateSellPrice");
         CsvToBean csv = new CsvToBean();
         try {
             resultList = csv.parse(strategy, new FileReader(file));
@@ -34,27 +36,30 @@ public class CsvCurrencyProvider implements CurrencyProvider {
     }
 
     @Override
-    public void updateBuyPrice(File file, String code, Double newValue) {
+    public void updateBuyPrice(final File file, final String code,
+                               final Double newValue) {
         updatePrice(file, code, newValue, "buy");
     }
 
     @Override
-    public void updateSellPrice(File file, String code, Double newValue) {
+    public void updateSellPrice(final File file, final String code,
+                                final Double newValue) {
         updatePrice(file, code, newValue, "sell");
     }
 
     @Override
-    public void deleteRatesForBank(File file) {
+    public void deleteRatesForBank(final File file) {
         FileUtils.deleteContentOfFile(file);
     }
 
-    private void updatePrice(File file, String code, Double newValue, String tag) {
+    private void updatePrice(final File file, final String code,
+                             final Double newValue, final String tag) {
         List<String[]> entries = null;
         String[] rowForDeleting = new String[1];
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             entries = reader.readAll();
             for (String[] row : entries) {
-                if(row[0].equals(code)) {
+                if (row[0].equals(code)) {
                     rowForDeleting = row;
                 }
             }
@@ -64,20 +69,21 @@ public class CsvCurrencyProvider implements CurrencyProvider {
         }
         try (CSVWriter writer = new CSVWriter(new FileWriter(file),
                 CSVWriter.DEFAULT_SEPARATOR,
-                CSVWriter.NO_QUOTE_CHARACTER)){
-            if(tag.equals("buy")) {
-                String[] newEntry = (code + "#" + newValue + "#" + rowForDeleting[2]).split("#");
+                CSVWriter.NO_QUOTE_CHARACTER)) {
+            if (tag.equals("buy")) {
+                String[] newEntry = (code + "#" + newValue + "#"
+                        + rowForDeleting[2]).split("#");
                 Objects.requireNonNull(entries).add(newEntry);
                 writer.writeAll(entries);
             }
-            if(tag.equals("sell")) {
-                String[] newEntry = (code + "#" + rowForDeleting[1]+ "#" +newValue).split("#");
+            if (tag.equals("sell")) {
+                String[] newEntry = (code + "#" + rowForDeleting[1]
+                        + "#" + newValue).split("#");
                 Objects.requireNonNull(entries).add(newEntry);
                 writer.writeAll(entries);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -1,24 +1,27 @@
 package com.aggregator.provider;
 
 
-public class ProviderFactory {
-    private final static XmlCurrencyProvider xmlCurrencyProvider = new XmlCurrencyProvider();
-    private final static JsonCurrencyProvider jsonCurrencyProvider = new JsonCurrencyProvider();
-    private final static CsvCurrencyProvider csvCurrencyProvider = new CsvCurrencyProvider();
+public final class ProviderFactory {
+    private static final  XmlCurrencyProvider XML_CURRENCY_PROVIDER =
+            new XmlCurrencyProvider();
+    private static final  JsonCurrencyProvider JSON_CURRENCY_PROVIDER =
+            new JsonCurrencyProvider();
+    private static final  CsvCurrencyProvider CSV_CURRENCY_PROVIDER =
+            new CsvCurrencyProvider();
 
     private ProviderFactory() {
     }
 
-    public static CurrencyProvider getProvider(String extension) {
+    public static CurrencyProvider getProvider(final String extension) {
         switch (extension) {
             case "xml":
-                return xmlCurrencyProvider;
+                return XML_CURRENCY_PROVIDER;
             case "json":
-                return jsonCurrencyProvider;
+                return JSON_CURRENCY_PROVIDER;
             case "csv":
-                return csvCurrencyProvider;
+                return CSV_CURRENCY_PROVIDER;
+            default:
+                return null;
         }
-        return null;
     }
-
 }

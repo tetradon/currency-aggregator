@@ -54,9 +54,9 @@ public class XmlCurrencyProviderTest {
     public void testGetAllRates() {
         List<CurrencyRate> ratesFromFile = provider.getData(file);
         for (int i = 0; i < rateList.size(); i++) {
-            assertEquals(rateList.get(i).getCode(), ratesFromFile.get(i).getCode());
-            assertEquals(rateList.get(i).getBuy(), ratesFromFile.get(i).getBuy());
-            assertEquals(rateList.get(i).getSell(), ratesFromFile.get(i).getSell());
+            assertEquals(rateList.get(i).getCurrencyRateCode(), ratesFromFile.get(i).getCurrencyRateCode());
+            assertEquals(rateList.get(i).getCurrencyRateBuyPrice(), ratesFromFile.get(i).getCurrencyRateBuyPrice());
+            assertEquals(rateList.get(i).getCurrencyRateSellPrice(), ratesFromFile.get(i).getCurrencyRateSellPrice());
         }
     }
 
@@ -65,7 +65,7 @@ public class XmlCurrencyProviderTest {
         Double newValue = 999.999;
         provider.updateBuyPrice(file, "USD", newValue);
         CurrencyRate usdFromFile = provider.getData(file).get(0);
-        assertEquals(newValue, usdFromFile.getBuy());
+        assertEquals(newValue, usdFromFile.getCurrencyRateBuyPrice());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class XmlCurrencyProviderTest {
         Double newValue = 999.999;
         provider.updateSellPrice(file, "RUB", newValue);
         CurrencyRate rubFromFile = provider.getData(file).get(1);
-        assertEquals(newValue, rubFromFile.getSell());
+        assertEquals(newValue, rubFromFile.getCurrencyRateSellPrice());
     }
 
     @Test
