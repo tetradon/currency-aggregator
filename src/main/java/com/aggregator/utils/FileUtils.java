@@ -1,8 +1,10 @@
 package com.aggregator.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public final class FileUtils {
@@ -39,9 +41,10 @@ public final class FileUtils {
     }
 
     public static void deleteContentOfFile(final File file) {
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.print("");
-        } catch (FileNotFoundException e) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(
+                new FileOutputStream(file), StandardCharsets.UTF_8)) {
+            writer.write("");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
