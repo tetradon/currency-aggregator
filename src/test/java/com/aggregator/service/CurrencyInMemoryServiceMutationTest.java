@@ -1,9 +1,6 @@
 package com.aggregator.service;
 
-import com.aggregator.provider.CurrencyProvider;
-import com.aggregator.provider.ProviderFactory;
-import com.aggregator.storage.CurrencyRatesStorage;
-import com.aggregator.utils.FileUtils;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +9,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,13 +48,7 @@ public class CurrencyInMemoryServiceMutationTest {
             e.printStackTrace();
         }
 
-        CurrencyRatesStorage storage = new CurrencyRatesStorage();
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            CurrencyProvider currencyProvider = ProviderFactory.getProvider(FileUtils.getExtension(fileEntry));
-            storage.putData(FileUtils.stripExtension(fileEntry.getName()),
-                    Objects.requireNonNull(currencyProvider).getData(fileEntry));
-        }
-        service = new CurrencyInMemoryService(storage, folder);
+        service = new CurrencyInMemoryService(folder);
     }
 
 
