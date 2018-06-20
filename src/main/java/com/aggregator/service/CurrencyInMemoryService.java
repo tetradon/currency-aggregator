@@ -41,15 +41,19 @@ public final class CurrencyInMemoryService
         folderWithRates = new File(
                 servletContext.getRealPath("/WEB-INF/rates/"));
         List<CurrencyRate> rates;
-        for (final File fileEntry
-                : Objects.requireNonNull(
-                        folderWithRates.listFiles())) {
-            currencyProvider = ProviderFactory
-                    .getProvider(FileUtils.getExtension(fileEntry));
-            rates = Objects.requireNonNull(currencyProvider).getData(fileEntry);
-            currencyRatesStorage
-                    .putData(FileUtils
-                            .stripExtension(fileEntry.getName()), rates);
+
+        File[] filesInFolder = folderWithRates.listFiles();
+        if (filesInFolder != null) {
+            for (final File fileEntry
+                    : filesInFolder) {
+                currencyProvider = ProviderFactory
+                        .getProvider(FileUtils.getExtension(fileEntry));
+                rates = Objects.requireNonNull(currencyProvider).
+                        getData(fileEntry);
+                currencyRatesStorage
+                        .putData(FileUtils
+                                .stripExtension(fileEntry.getName()), rates);
+            }
         }
     }
 
