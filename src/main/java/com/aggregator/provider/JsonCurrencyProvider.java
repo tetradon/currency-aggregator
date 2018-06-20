@@ -18,10 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class JsonCurrencyProvider implements CurrencyProvider {
-    private ArrayList<CurrencyRate> resultList;
 
     public List<CurrencyRate> getData(final File file) {
-        resultList = new ArrayList<>();
+        ArrayList<CurrencyRate> resultList = new ArrayList<>();
         if (file.length() != 0) {
             ObjectMapper mapper = new ObjectMapper();
             mapper
