@@ -12,6 +12,7 @@
     <properties>
         <springframework.version>5.0.4.RELEASE</springframework.version>
         <dependency.locations.enabled>false</dependency.locations.enabled>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <profiles>
@@ -46,7 +47,6 @@
                         <executions>
                             <execution>
                                 <id>validate</id>
-                                <!--<phase>compile</phase>-->
                                 <phase>validate</phase>
                                 <configuration>
                                     <encoding>UTF-8</encoding>
@@ -62,6 +62,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>findbugs-maven-plugin</artifactId>
+                        <version>3.0.5</version>
                         <configuration>
                             <failOnError>true</failOnError>
                         </configuration>
