@@ -4,8 +4,7 @@ import com.aggregator.model.CurrencyRate;
 import com.aggregator.utils.FileUtils;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,16 +23,14 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
 
     @Override
     public List<CurrencyRate> getData(final File file) {
-        ColumnPositionMappingStrategy<CurrencyRate> strategy =
-                new ColumnPositionMappingStrategy<>();
-        strategy.setType(CurrencyRate.class);
-        strategy.setColumnMapping("currencyRateCode",
-                "currencyRateBuyPrice", "currencyRateSellPrice");
-        CsvToBean<CurrencyRate> csv = new CsvToBean<>();
         try {
-            resultList = csv.parse(strategy,
-                    new InputStreamReader(new FileInputStream(file),
-                            StandardCharsets.UTF_8));
+            resultList
+                    = new CsvToBeanBuilder<CurrencyRate>(
+                            new InputStreamReader(new FileInputStream(file),
+                                    StandardCharsets.UTF_8))
+                    .withType(CurrencyRate.class)
+                    .build()
+                    .parse();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -78,7 +75,9 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
                 new OutputStreamWriter(
                         new FileOutputStream(file), StandardCharsets.UTF_8),
                 CSVWriter.DEFAULT_SEPARATOR,
-                CSVWriter.NO_QUOTE_CHARACTER)) {
+                CSVWriter.NO_QUOTE_CHARACTER,
+                CSVWriter.NO_ESCAPE_CHARACTER,
+                CSVWriter.DEFAULT_LINE_END)) {
             if (tag.equals("buy")) {
                 String[] newEntry = (code + "#" + newValue + "#"
                         + rowForDeleting[2]).split("#");
