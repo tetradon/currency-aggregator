@@ -1,17 +1,12 @@
 package com.aggregator.service;
 
-
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.provider.CurrencyProvider;
 import com.aggregator.provider.ProviderFactory;
 import com.aggregator.storage.CurrencyRatesStorage;
 import com.aggregator.utils.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.ServletContextAware;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -19,27 +14,14 @@ import java.util.Objects;
 
 @Service
 public final class CurrencyInMemoryService
-        implements CurrencyService, ServletContextAware {
+        implements CurrencyService {
     private CurrencyRatesStorage currencyRatesStorage;
-    private ServletContext servletContext;
     private CurrencyProvider currencyProvider;
     private File folderWithRates;
 
-    public CurrencyInMemoryService(final CurrencyRatesStorage storage,
-                                   final File folder) {
-        currencyRatesStorage = storage;
+    public CurrencyInMemoryService(final File folder) {
         folderWithRates = folder;
-    }
-
-    @Autowired
-    public CurrencyInMemoryService(final CurrencyRatesStorage storage) {
-        currencyRatesStorage = storage;
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        folderWithRates = new File(
-                servletContext.getRealPath("/WEB-INF/rates/"));
+        currencyRatesStorage = new CurrencyRatesStorage();
         List<CurrencyRate> rates;
 
         File[] filesInFolder = folderWithRates.listFiles();
@@ -55,6 +37,10 @@ public final class CurrencyInMemoryService
                                 .stripExtension(fileEntry.getName()), rates);
             }
         }
+    }
+
+    public CurrencyInMemoryService(final CurrencyRatesStorage storage) {
+        currencyRatesStorage = storage;
     }
 
     @Override
@@ -112,10 +98,5 @@ public final class CurrencyInMemoryService
     public Map<String,
             Map<String, Map.Entry<String, Double>>> getBestPropositions() {
         return currencyRatesStorage.getBestPropositions();
-    }
-
-    @Override
-    public void setServletContext(final ServletContext context) {
-        servletContext = context;
     }
 }
