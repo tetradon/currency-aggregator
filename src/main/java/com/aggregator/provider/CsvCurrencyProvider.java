@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 public final class CsvCurrencyProvider implements CurrencyProvider {
-    private static List<CurrencyRate> resultList = new ArrayList<>();
+    private List<CurrencyRate> resultList = new ArrayList<>();
 
     @Override
     public List<CurrencyRate> getData(final File file) {
