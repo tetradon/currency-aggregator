@@ -16,7 +16,7 @@ public final class FileUtils {
         if (str == null) {
             return null;
         }
-        int pos = str.lastIndexOf(".");
+        int pos = str.lastIndexOf('.');
         if (pos == -1) {
             return str;
         }
