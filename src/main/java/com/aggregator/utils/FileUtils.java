@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+
 
 public final class FileUtils {
 
@@ -23,11 +23,10 @@ public final class FileUtils {
         return str.substring(0, pos);
     }
 
-    public static File findFileByName(final File folder,
+    public static File[] findFilesInFolderByName(final File folder,
                                       final String searchName) {
-        File[] matchingFiles = folder
+        return folder
                 .listFiles((dir, name) -> name.startsWith(searchName));
-        return Objects.requireNonNull(matchingFiles)[0];
     }
 
     public static String getExtension(final File file) {
