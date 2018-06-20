@@ -22,7 +22,6 @@ import java.io.File;
 public class AppConfig implements WebMvcConfigurer {
 
     @Bean
-    @Autowired
     public CurrencyInMemoryService currencyInMemoryService(
             ServletContext servletContext) {
         File folder = new File(servletContext.getRealPath("/WEB-INF/rates/"));
