@@ -1,18 +1,22 @@
 package com.aggregator.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.opencsv.bean.CsvBindByPosition;
 
 import java.util.Objects;
 
 public final class CurrencyRate {
 
     @JsonProperty("code")
+    @CsvBindByPosition(position = 0)
     private String currencyRateCode;
 
     @JsonProperty("buy")
+    @CsvBindByPosition(position = 1)
     private Double currencyRateBuyPrice;
 
     @JsonProperty("sell")
+    @CsvBindByPosition(position = 2)
     private Double currencyRateSellPrice;
 
     public CurrencyRate() {
