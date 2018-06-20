@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class JsonCurrencyProvider implements CurrencyProvider {
-    private static ArrayList<CurrencyRate> resultList;
+    private ArrayList<CurrencyRate> resultList;
 
     public List<CurrencyRate> getData(final File file) {
         resultList = new ArrayList<>();
