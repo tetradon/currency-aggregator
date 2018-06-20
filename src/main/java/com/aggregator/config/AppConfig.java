@@ -23,8 +23,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     @Autowired
-    public CurrencyInMemoryService currencyInMemoryService (
-            ServletContext servletContext){
+    public CurrencyInMemoryService currencyInMemoryService(
+            ServletContext servletContext) {
         File folder = new File(servletContext.getRealPath("/WEB-INF/rates/"));
         return new CurrencyInMemoryService(folder);
     }
