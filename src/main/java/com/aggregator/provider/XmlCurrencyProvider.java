@@ -17,9 +17,9 @@ import java.util.Objects;
 
 public final class XmlCurrencyProvider implements CurrencyProvider {
 
-    private static ArrayList<CurrencyRate> resultList;
+    private ArrayList<CurrencyRate> resultList;
 
-    private static void nextNode(final Node node) {
+    private void nextNode(final Node node) {
         if (node != null) {
             int type = node.getNodeType();
             switch (type) {
@@ -44,7 +44,7 @@ public final class XmlCurrencyProvider implements CurrencyProvider {
         }
     }
 
-    private static void passChild(final Node nd) {
+    private void passChild(final Node nd) {
         NodeList childNodes = nd.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             nextNode(childNodes.item(i));
