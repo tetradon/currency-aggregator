@@ -66,7 +66,7 @@ public final class CurrencyInMemoryService
     @Override
     public void updateSellPriceForBank(final String bank, final String code,
                                        final String value) {
-        File file = FileUtils.findFileByName(folderWithRates, bank);
+        File file = FileUtils.findFilesInFolderByName(folderWithRates, bank)[0];
         currencyProvider = ProviderFactory
                 .getProvider(FileUtils.getExtension(file));
         currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
@@ -77,7 +77,7 @@ public final class CurrencyInMemoryService
     @Override
     public void updateBuyPriceForBank(final String bank, final String code,
                                       final String value) {
-        File file = FileUtils.findFileByName(folderWithRates, bank);
+        File file = FileUtils.findFilesInFolderByName(folderWithRates, bank)[0];
         currencyProvider = ProviderFactory
                 .getProvider(FileUtils.getExtension(file));
         currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
@@ -87,7 +87,7 @@ public final class CurrencyInMemoryService
 
     @Override
     public void deleteRatesForBank(final String bank) {
-        File file = FileUtils.findFileByName(folderWithRates, bank);
+        File file = FileUtils.findFilesInFolderByName(folderWithRates, bank)[0];
         currencyProvider = ProviderFactory
                 .getProvider(FileUtils.getExtension(file));
         currencyProvider.deleteRatesForBank(file);
