@@ -1,5 +1,8 @@
 package com.aggregator.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 
 
 public final class FileUtils {
+
+    private static final Logger log =
+            LogManager.getLogger(DomUtils.class);
 
     private FileUtils() {
     }
@@ -44,7 +50,7 @@ public final class FileUtils {
                 new FileOutputStream(file), StandardCharsets.UTF_8)) {
             writer.write("");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception while deleting file", e);
         }
     }
 }
