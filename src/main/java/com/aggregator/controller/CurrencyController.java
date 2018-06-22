@@ -3,6 +3,8 @@ package com.aggregator.controller;
 import com.aggregator.response.JsonResponse;
 import com.aggregator.service.CurrencyService;
 import com.aggregator.utils.SortMapUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,11 @@ import java.util.Map;
 public final class CurrencyController {
     private final CurrencyService currencyService;
 
+    private static final Logger log =
+            LogManager.getLogger(CurrencyController.class);
+    private static final String GET_REQUEST = "GET request to /";
+    private static final String RESPONSE = "Response: ";
+
     @Autowired
     public CurrencyController(final CurrencyService service) {
         this.currencyService = service;
@@ -25,14 +32,20 @@ public final class CurrencyController {
 
     @GetMapping(value = {"", "/"}, produces = "application/json")
     public String getRates() {
-        return JsonResponse.getJsonFromMap(currencyService.getAllRates());
+        log.info(GET_REQUEST);
+        Map response = currencyService.getAllRates();
+        log.info(RESPONSE + response);
+        return JsonResponse.getJsonFromMap(response);
     }
 
     @GetMapping(value = "/{code}", produces = "application/json")
     public String getRatesForCode(final @PathVariable(value = "code")
                                               String code) {
+        log.info(GET_REQUEST + code);
+        Map response = currencyService.getRatesForCode(code);
+        log.info(RESPONSE + response);
         return JsonResponse
-                .getJsonFromMap(currencyService.getRatesForCode(code));
+                .getJsonFromMap(response);
     }
 
     @GetMapping(value = "/{code}/{tag}", produces = "application/json")
@@ -41,12 +54,15 @@ public final class CurrencyController {
                                final @RequestParam(value = "sort",
                                        required = false) String sort) {
         Map<String, Double> resultMap = null;
+        log.info(GET_REQUEST + code + "/" + tag
+                + " with param sort = " + sort);
         if (tag.equals("buy")) {
             resultMap = currencyService.getBuyPricesForCode(code);
         } else if (tag.equals("sell")) {
             resultMap = currencyService.getSellPricesForCode(code);
         }
         resultMap = sortIfNeeded(sort, resultMap);
+        log.info(RESPONSE + resultMap);
         return JsonResponse.getJsonFromMap(resultMap);
     }
 
@@ -55,25 +71,33 @@ public final class CurrencyController {
                                   final @PathVariable("tag") String tag,
                                   final @RequestParam("value") String value,
                                   final @RequestParam("bank") String bank) {
+        log.info("PUT request to /" + code + "/" + tag
+                + " with params value = " + value + ",bank = " + bank);
         if (tag.equals("buy")) {
             currencyService.updateBuyPriceForBank(bank, code, value);
         } else if (tag.equals("sell")) {
             currencyService.updateSellPriceForBank(bank, code, value);
         }
+        log.info(RESPONSE + JsonResponse.OK_RESPONSE);
         return JsonResponse.OK_RESPONSE;
 
     }
 
     @DeleteMapping(value = "/", produces = "application/json")
     public String deleteRatesForBank(final @RequestParam("bank") String bank) {
+        log.info("DELETE request to / with param bank = " + bank);
         currencyService.deleteRatesForBank(bank);
+        log.info(RESPONSE + JsonResponse.OK_RESPONSE);
         return JsonResponse.OK_RESPONSE;
     }
 
     @GetMapping(value = "/report", produces = "application/json")
     public String report() {
+        log.info("GET request to /report");
+        Map response = currencyService.getBestPropositions();
+        log.info(RESPONSE + response);
         return JsonResponse.
-                getJsonFromMap(currencyService.getBestPropositions());
+                getJsonFromMap(response);
     }
 
     private Map<String, Double> sortIfNeeded(
