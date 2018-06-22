@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public final class JsonCurrencyProvider implements CurrencyProvider {
+
+    private static final Logger log =
+            LogManager.getLogger(JsonCurrencyProvider.class);
 
     public List<CurrencyRate> getData(final File file) {
         ArrayList<CurrencyRate> resultList = new ArrayList<>();
@@ -32,7 +37,7 @@ public final class JsonCurrencyProvider implements CurrencyProvider {
                                 new TypeReference<Collection<CurrencyRate>>() {
                                 });
             } catch (IOException e) {
-                e.printStackTrace();
+               log.error("Exception while reading from JSON", e);
             }
         }
         return resultList;
@@ -71,7 +76,7 @@ public final class JsonCurrencyProvider implements CurrencyProvider {
             writer.writeValue(file, rootNode);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception while writing to JSON", e);
         }
     }
 }
