@@ -4,6 +4,8 @@ package com.aggregator.provider;
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.utils.DomUtils;
 import com.aggregator.utils.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,6 +18,9 @@ import java.util.List;
 import java.util.Objects;
 
 public final class XmlCurrencyProvider implements CurrencyProvider {
+
+    private static final Logger log =
+            LogManager.getLogger(XmlCurrencyProvider.class);
 
     private ArrayList<CurrencyRate> resultList;
 
@@ -85,7 +90,7 @@ public final class XmlCurrencyProvider implements CurrencyProvider {
                 try {
                     DomUtils.saveUpdateToXml(file, doc);
                 } catch (TransformerException e) {
-                    e.printStackTrace();
+                    log.error("Exception while saving update to XML", e);
                 }
             }
         }
