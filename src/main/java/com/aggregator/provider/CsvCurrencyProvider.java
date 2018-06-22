@@ -5,6 +5,8 @@ import com.aggregator.utils.FileUtils;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +23,9 @@ import java.util.Objects;
 public final class CsvCurrencyProvider implements CurrencyProvider {
     private List<CurrencyRate> resultList = new ArrayList<>();
 
+    private static final Logger log =
+            LogManager.getLogger(CsvCurrencyProvider.class);
+
     @Override
     public List<CurrencyRate> getData(final File file) {
         try {
@@ -32,7 +37,7 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
                     .build()
                     .parse();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("csv file not found", e);
         }
         return resultList;
     }
@@ -69,7 +74,7 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
             }
             entries.remove(rowForDeleting);
         } catch (IOException e) {
-            e.printStackTrace();
+           log.error("Exception while creating CSVReader", e);
         }
         try (CSVWriter writer = new CSVWriter(
                 new OutputStreamWriter(
@@ -91,7 +96,7 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
                 writer.writeAll(entries);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception while creating CSVWriter", e);
         }
     }
 }
