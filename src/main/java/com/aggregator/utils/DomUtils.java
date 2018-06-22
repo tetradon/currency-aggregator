@@ -1,5 +1,7 @@
 package com.aggregator.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,6 +24,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 public final class DomUtils {
+
+    private static final Logger log =
+            LogManager.getLogger(DomUtils.class);
 
     private DomUtils() {
     }
@@ -54,8 +59,10 @@ public final class DomUtils {
             DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();
             DocumentBuilder parser = df.newDocumentBuilder();
             d = parser.parse(file);
-        } catch (SAXException | IOException | ParserConfigurationException e) {
-            e.printStackTrace();
+        } catch (SAXException | IOException e) {
+            log.error("Exception while parsing XML", e);
+        } catch (ParserConfigurationException e) {
+            log.error("Exception while creating XML document builder", e);
         }
         return d;
     }
