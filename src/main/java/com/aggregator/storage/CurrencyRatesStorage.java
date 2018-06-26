@@ -1,9 +1,11 @@
 package com.aggregator.storage;
 
 import com.aggregator.model.CurrencyRate;
+import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Component;
 
 
+import javax.money.MonetaryAmount;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.Comparator;
@@ -51,14 +53,14 @@ public final class CurrencyRatesStorage {
         return result;
     }
 
-    public Map<String, Double> getBuyPricesForCode(final String code) {
-        Map<String, Double> result = new HashMap<>();
+    public Map<String, MonetaryAmount> getBuyPricesForCode(final String code) {
+        Map<String, MonetaryAmount> result = new HashMap<>();
         for (Map.Entry<String, List<CurrencyRate>> entry
                 : currencyData.entrySet()) {
             for (CurrencyRate rate : entry.getValue()) {
                 if (rate != null
                         && rate.getCurrencyRateCode().equals(code)
-                        && rate.getCurrencyRateBuyPrice() > 0) {
+                        && rate.getCurrencyRateBuyPrice().isPositive()) {
                     result.put(entry.getKey(), rate.getCurrencyRateBuyPrice());
                     break;
                 }
@@ -67,15 +69,15 @@ public final class CurrencyRatesStorage {
         return result;
     }
 
-    public Map<String, Double> getSellPricesForCode(final String code) {
-        Map<String, Double> result = new HashMap<>();
+    public Map<String, MonetaryAmount> getSellPricesForCode(final String code) {
+        Map<String, MonetaryAmount> result = new HashMap<>();
         for (Map.Entry<String, List<CurrencyRate>> entry
                 : currencyData.entrySet()) {
             for (CurrencyRate rate
                     : entry.getValue()) {
                 if (rate != null
                         && rate.getCurrencyRateCode().equals(code)
-                        && rate.getCurrencyRateSellPrice() > 0) {
+                        && rate.getCurrencyRateSellPrice().isPositive()) {
                     result.put(entry.getKey(), rate.getCurrencyRateSellPrice());
                     break;
                 }
@@ -85,16 +87,16 @@ public final class CurrencyRatesStorage {
     }
 
     public Map<String,
-            Map<String, Map.Entry<String, Double>>> getBestPropositions() {
+            Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
 
-        Map<String, Map<String, Map.Entry<String, Double>>> result
+        Map<String, Map<String, Map.Entry<String, MonetaryAmount>>> result
                 = new HashMap<>();
         Set<String> codes = getAllCodes();
 
         for (String code : codes) {
-            Double maxBuy = Double.MIN_VALUE;
+            MonetaryAmount maxBuy = Money.of(Double.MIN_VALUE, code);
             String maxBuyBank = "";
-            Double minSell = Double.MAX_VALUE;
+            MonetaryAmount minSell = Money.of(Double.MAX_VALUE, code);
             String minSellBank = "";
             for (Map.Entry<String, List<CurrencyRate>> entry
                     : currencyData.entrySet()) {
@@ -118,29 +120,29 @@ public final class CurrencyRatesStorage {
                         .sorted(new SellComparator())
                         .collect(Collectors.toList());
 
-                Double localMaxBuy = sortedBuyRates
+                MonetaryAmount localMaxBuy = sortedBuyRates
                         .get(sortedBuyRates.size() - 1)
                         .getCurrencyRateBuyPrice();
 
-                Double localMinSell = sortedSellRates
+                MonetaryAmount localMinSell = sortedSellRates
                         .get(0).getCurrencyRateSellPrice();
 
-                if (localMaxBuy > maxBuy) {
+                if (localMaxBuy.isGreaterThan(maxBuy)) {
                     maxBuy = localMaxBuy;
                     maxBuyBank = entry.getKey();
                 }
 
-                if (localMinSell < minSell) {
+                if (localMinSell.isLessThan(minSell)) {
                     minSell = localMinSell;
                     minSellBank = entry.getKey();
                 }
             }
 
-            Map.Entry<String, Double> bankBuyEntry =
+            Map.Entry<String, MonetaryAmount> bankBuyEntry =
                     new AbstractMap.SimpleEntry<>(maxBuyBank, maxBuy);
-            Map.Entry<String, Double> bankSellEntry =
+            Map.Entry<String, MonetaryAmount> bankSellEntry =
                     new AbstractMap.SimpleEntry<>(minSellBank, minSell);
-            Map<String, Map.Entry<String, Double>> mapEntry = new HashMap<>();
+            Map<String, Map.Entry<String, MonetaryAmount>> mapEntry = new HashMap<>();
             mapEntry.put("buy", bankBuyEntry);
             mapEntry.put("sell", bankSellEntry);
             result.put(code, mapEntry);
@@ -167,7 +169,7 @@ public final class CurrencyRatesStorage {
                 for (CurrencyRate rate : entry.getValue()) {
                     if (rate != null
                             && rate.getCurrencyRateCode().equals(code)
-                            && rate.getCurrencyRateSellPrice() > 0) {
+                            && rate.getCurrencyRateSellPrice().isPositive()) {
                         rate.setCurrencyRateSellPrice(value);
                         break;
                     }
@@ -184,7 +186,7 @@ public final class CurrencyRatesStorage {
                 for (CurrencyRate rate : entry.getValue()) {
                     if (rate != null
                             && rate.getCurrencyRateCode().equals(code)
-                            && rate.getCurrencyRateBuyPrice() > 0) {
+                            && rate.getCurrencyRateBuyPrice().isPositive()) {
                         rate.setCurrencyRateBuyPrice(value);
                         break;
                     }
@@ -204,16 +206,16 @@ public final class CurrencyRatesStorage {
     private static class BuyComparator
             implements Comparator<CurrencyRate>, Serializable {
         public int compare(CurrencyRate r1, CurrencyRate r2) {
-            return Double.compare(r1.getCurrencyRateBuyPrice(),
-                    r2.getCurrencyRateBuyPrice());
+            return r1.getCurrencyRateBuyPrice()
+                    .compareTo(r2.getCurrencyRateBuyPrice());
         }
     }
 
     private static class SellComparator
             implements Comparator<CurrencyRate>, Serializable {
         public int compare(CurrencyRate r1, CurrencyRate r2) {
-            return Double.compare(r1.getCurrencyRateSellPrice(),
-                    r2.getCurrencyRateSellPrice());
+            return r1.getCurrencyRateSellPrice()
+                    .compareTo(r2.getCurrencyRateSellPrice());
         }
     }
 }
