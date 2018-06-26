@@ -9,7 +9,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-public final class CurrencyRateDeserializer extends StdDeserializer<CurrencyRate> {
+public final class CurrencyRateDeserializer
+        extends StdDeserializer<CurrencyRate> {
 
     public CurrencyRateDeserializer() {
         this(null);
@@ -20,7 +21,8 @@ public final class CurrencyRateDeserializer extends StdDeserializer<CurrencyRate
     }
 
     @Override
-    public CurrencyRate deserialize(JsonParser jp, DeserializationContext ctxt)
+    public CurrencyRate deserialize(JsonParser jp,
+                                    DeserializationContext ctxt)
             throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         String code = node.get("code").asText();

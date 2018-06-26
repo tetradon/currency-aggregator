@@ -30,8 +30,8 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
                 new InputStreamReader(
                         new FileInputStream(file), StandardCharsets.UTF_8))) {
             List<String[]> entries = reader.readAll();
-            for (String [] arr:
-                    entries) {
+            for (String[] arr
+                    : entries) {
                 resultList.add(new CurrencyRate(
                         arr[0],
                         Double.parseDouble(arr[1]),

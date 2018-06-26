@@ -97,7 +97,8 @@ public final class CurrencyInMemoryService
 
     @Override
     public Map<String,
-            Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
+            Map<String,
+                    Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
         return currencyRatesStorage.getBestPropositions();
     }
 }

@@ -87,7 +87,8 @@ public final class CurrencyRatesStorage {
     }
 
     public Map<String,
-            Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
+            Map<String,
+                    Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
 
         Map<String, Map<String, Map.Entry<String, MonetaryAmount>>> result
                 = new HashMap<>();
@@ -142,7 +143,8 @@ public final class CurrencyRatesStorage {
                     new AbstractMap.SimpleEntry<>(maxBuyBank, maxBuy);
             Map.Entry<String, MonetaryAmount> bankSellEntry =
                     new AbstractMap.SimpleEntry<>(minSellBank, minSell);
-            Map<String, Map.Entry<String, MonetaryAmount>> mapEntry = new HashMap<>();
+            Map<String, Map.Entry<String, MonetaryAmount>> mapEntry
+                    = new HashMap<>();
             mapEntry.put("buy", bankBuyEntry);
             mapEntry.put("sell", bankSellEntry);
             result.put(code, mapEntry);

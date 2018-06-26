@@ -50,10 +50,11 @@ public final class CurrencyController {
     }
 
     @GetMapping(value = "/{code}/{tag}", produces = "application/json")
-    public String getPricesForCode(final @PathVariable(value = "code") String code,
-                               final @PathVariable("tag") String tag,
-                               final @RequestParam(value = "sort",
-                                       required = false) String sort) {
+    public String getPricesForCode(
+            final @PathVariable(value = "code") String code,
+            final @PathVariable("tag") String tag,
+            final @RequestParam(value = "sort",
+                    required = false) String sort) {
         Map<String, MonetaryAmount> resultMap = null;
         log.info(GET_REQUEST + code + "/" + tag
                 + " with param sort = " + sort);

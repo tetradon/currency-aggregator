@@ -22,5 +22,6 @@ public interface CurrencyService {
 
     void deleteRatesForBank(String bank);
 
-    Map<String, Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions();
+    Map<String, Map<String,
+            Map.Entry<String, MonetaryAmount>>> getBestPropositions();
 }
