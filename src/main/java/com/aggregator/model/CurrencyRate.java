@@ -1,6 +1,8 @@
 package com.aggregator.model;
 
+import com.aggregator.utils.CurrencyRateDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opencsv.bean.CsvBindByPosition;
 import org.javamoney.moneta.Money;
 
@@ -9,6 +11,7 @@ import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.util.Objects;
 
+@JsonDeserialize(using = CurrencyRateDeserializer.class)
 public final class CurrencyRate {
 
     @JsonProperty("code")
@@ -53,7 +56,6 @@ public final class CurrencyRate {
     public String getCurrencyRateCode() {
         return currencyRateCode.getCurrencyCode();
     }
-
 
     @Override
     public boolean equals(final Object o) {
