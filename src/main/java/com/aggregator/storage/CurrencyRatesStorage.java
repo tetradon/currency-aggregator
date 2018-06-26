@@ -102,31 +102,16 @@ public final class CurrencyRatesStorage {
             for (Map.Entry<String, List<CurrencyRate>> entry
                     : currencyData.entrySet()) {
 
-                List<CurrencyRate> rates = entry.getValue()
-                        .stream()
-                        .filter(rate -> rate.getCurrencyRateCode().equals(code))
-                        .collect(Collectors.toList());
+                List<CurrencyRate> rates = filterOutByCode(code, entry);
 
                 if (rates.isEmpty()) {
                     continue;
                 }
 
-                List<CurrencyRate> sortedBuyRates = rates
-                        .stream()
-                        .sorted(new BuyComparator())
-                        .collect(Collectors.toList());
-
-                List<CurrencyRate> sortedSellRates = rates
-                        .stream()
-                        .sorted(new SellComparator())
-                        .collect(Collectors.toList());
-
-                MonetaryAmount localMaxBuy = sortedBuyRates
-                        .get(sortedBuyRates.size() - 1)
-                        .getCurrencyRateBuyPrice();
-
-                MonetaryAmount localMinSell = sortedSellRates
-                        .get(0).getCurrencyRateSellPrice();
+                List<CurrencyRate> sortedBuyRates = sortByBuyPrice(rates);
+                List<CurrencyRate> sortedSellRates = sortBySellPrice(rates);
+                MonetaryAmount localMaxBuy = getLast(sortedBuyRates);
+                MonetaryAmount localMinSell = getFirst(sortedSellRates);
 
                 if (localMaxBuy.isGreaterThan(maxBuy)) {
                     maxBuy = localMaxBuy;
@@ -150,6 +135,39 @@ public final class CurrencyRatesStorage {
             result.put(code, mapEntry);
         }
         return result;
+    }
+
+    private List<CurrencyRate> filterOutByCode(
+            String code, Map.Entry<String, List<CurrencyRate>> entry) {
+        return entry.getValue()
+                .stream()
+                .filter(rate -> rate.getCurrencyRateCode().equals(code))
+                .collect(Collectors.toList());
+    }
+
+    private MonetaryAmount getFirst(List<CurrencyRate> sortedSellRates) {
+        return sortedSellRates
+                .get(0).getCurrencyRateSellPrice();
+    }
+
+    private MonetaryAmount getLast(List<CurrencyRate> sortedBuyRates) {
+        return sortedBuyRates
+                .get(sortedBuyRates.size() - 1)
+                .getCurrencyRateBuyPrice();
+    }
+
+    private List<CurrencyRate> sortBySellPrice(List<CurrencyRate> rates) {
+        return rates
+                .stream()
+                .sorted(new SellComparator())
+                .collect(Collectors.toList());
+    }
+
+    private List<CurrencyRate> sortByBuyPrice(List<CurrencyRate> rates) {
+        return rates
+                .stream()
+                .sorted(new BuyComparator())
+                .collect(Collectors.toList());
     }
 
     private Set<String> getAllCodes() {
