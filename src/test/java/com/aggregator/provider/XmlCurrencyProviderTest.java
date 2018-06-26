@@ -1,6 +1,7 @@
 package com.aggregator.provider;
 
 import com.aggregator.model.CurrencyRate;
+import org.javamoney.moneta.Money;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class XmlCurrencyProviderTest {
         Double newValue = 999.999;
         provider.updateBuyPrice(file, "USD", newValue);
         CurrencyRate usdFromFile = provider.getData(file).get(0);
-        assertEquals(newValue, usdFromFile.getCurrencyRateBuyPrice());
+        assertEquals(Money.of(newValue,"USD"), usdFromFile.getCurrencyRateBuyPrice());
     }
 
     @Test
@@ -73,7 +74,7 @@ public class XmlCurrencyProviderTest {
         Double newValue = 999.999;
         provider.updateSellPrice(file, "RUB", newValue);
         CurrencyRate rubFromFile = provider.getData(file).get(1);
-        assertEquals(newValue, rubFromFile.getCurrencyRateSellPrice());
+        assertEquals(Money.of(newValue,"RUB"), rubFromFile.getCurrencyRateSellPrice());
     }
 
     @Test

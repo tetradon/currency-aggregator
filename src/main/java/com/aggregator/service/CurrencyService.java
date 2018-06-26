@@ -3,6 +3,7 @@ package com.aggregator.service;
 
 import com.aggregator.model.CurrencyRate;
 
+import javax.money.MonetaryAmount;
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +12,9 @@ public interface CurrencyService {
 
     Map<String, List<CurrencyRate>> getAllRates();
 
-    Map<String, Double> getBuyPricesForCode(String code);
+    Map<String, MonetaryAmount> getBuyPricesForCode(String code);
 
-    Map<String, Double> getSellPricesForCode(String code);
+    Map<String, MonetaryAmount> getSellPricesForCode(String code);
 
     void updateSellPriceForBank(String bank, String code, String value);
 
@@ -21,5 +22,5 @@ public interface CurrencyService {
 
     void deleteRatesForBank(String bank);
 
-    Map<String, Map<String, Map.Entry<String, Double>>> getBestPropositions();
+    Map<String, Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions();
 }

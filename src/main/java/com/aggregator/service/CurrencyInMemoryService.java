@@ -7,6 +7,7 @@ import com.aggregator.storage.CurrencyRatesStorage;
 import com.aggregator.utils.FileUtils;
 import org.springframework.stereotype.Service;
 
+import javax.money.MonetaryAmount;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -54,12 +55,12 @@ public final class CurrencyInMemoryService
     }
 
     @Override
-    public Map<String, Double> getBuyPricesForCode(final String code) {
+    public Map<String, MonetaryAmount> getBuyPricesForCode(final String code) {
         return currencyRatesStorage.getBuyPricesForCode(code);
     }
 
     @Override
-    public Map<String, Double> getSellPricesForCode(final String code) {
+    public Map<String, MonetaryAmount> getSellPricesForCode(final String code) {
         return currencyRatesStorage.getSellPricesForCode(code);
     }
 
@@ -96,7 +97,7 @@ public final class CurrencyInMemoryService
 
     @Override
     public Map<String,
-            Map<String, Map.Entry<String, Double>>> getBestPropositions() {
+            Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
         return currencyRatesStorage.getBestPropositions();
     }
 }
