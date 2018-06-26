@@ -4,13 +4,11 @@ import com.aggregator.model.CurrencyRate;
 import com.aggregator.utils.FileUtils;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.CsvToBeanBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,16 +26,19 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
 
     @Override
     public List<CurrencyRate> getData(final File file) {
-        try {
-            resultList
-                    = new CsvToBeanBuilder<CurrencyRate>(
-                            new InputStreamReader(new FileInputStream(file),
-                                    StandardCharsets.UTF_8))
-                    .withType(CurrencyRate.class)
-                    .build()
-                    .parse();
-        } catch (FileNotFoundException e) {
-            log.error("csv file not found", e);
+        try (CSVReader reader = new CSVReader(
+                new InputStreamReader(
+                        new FileInputStream(file), StandardCharsets.UTF_8))) {
+            List<String[]> entries = reader.readAll();
+            for (String [] arr:
+                    entries) {
+                resultList.add(new CurrencyRate(
+                        arr[0],
+                        Double.parseDouble(arr[1]),
+                        Double.parseDouble(arr[2])));
+            }
+        } catch (IOException e) {
+            log.error("Exception while creating CSVReader", e);
         }
         return resultList;
     }
