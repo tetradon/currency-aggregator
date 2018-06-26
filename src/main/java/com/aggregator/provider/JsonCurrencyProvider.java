@@ -4,7 +4,6 @@ import com.aggregator.model.CurrencyRate;
 import com.aggregator.utils.FileUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -28,9 +27,6 @@ public final class JsonCurrencyProvider implements CurrencyProvider {
         ArrayList<CurrencyRate> resultList = new ArrayList<>();
         if (file.length() != 0) {
             ObjectMapper mapper = new ObjectMapper();
-            mapper
-                    .configure(DeserializationFeature
-                            .ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             try {
                 resultList = mapper
                         .readValue(file,
