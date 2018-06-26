@@ -1,6 +1,7 @@
 package com.aggregator.provider;
 
 import com.aggregator.model.CurrencyRate;
+import org.javamoney.moneta.Money;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class CsvCurrencyProviderTest {
         provider.updateBuyPrice(file, "USD", newValue);
         int indexOfUpdatedValue = provider.getData(file).size() - 1;
         CurrencyRate usdFromFile = provider.getData(file).get(indexOfUpdatedValue);
-        assertEquals(newValue, usdFromFile.getCurrencyRateBuyPrice());
+        assertEquals(Money.of(newValue, "USD"), usdFromFile.getCurrencyRateBuyPrice());
     }
 
     @Test
@@ -62,7 +63,7 @@ public class CsvCurrencyProviderTest {
         provider.updateSellPrice(file, "RUB", newValue);
         int indexOfUpdatedValue = provider.getData(file).size() - 1;
         CurrencyRate rubFromFile = provider.getData(file).get(indexOfUpdatedValue);
-        assertEquals(newValue, rubFromFile.getCurrencyRateSellPrice());
+        assertEquals(Money.of(newValue, "RUB"), rubFromFile.getCurrencyRateSellPrice());
     }
 
     @Test

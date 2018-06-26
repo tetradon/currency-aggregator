@@ -1,6 +1,7 @@
 package com.aggregator.service;
 
 
+import org.javamoney.moneta.Money;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,14 +57,14 @@ public class CurrencyInMemoryServiceMutationTest {
     public void testUpdateBuy() {
         Double newValue = 999.;
         service.updateBuyPriceForBank(bank, "USD", newValue.toString());
-        assertEquals(newValue, service.getBuyPricesForCode("USD").get(bank));
+        assertEquals(Money.of(newValue,"USD"), service.getBuyPricesForCode("USD").get(bank));
     }
 
     @Test
     public void testUpdateSell() {
         Double newValue = 999.;
         service.updateSellPriceForBank(bank, "RUB", newValue.toString());
-        assertEquals(newValue, service.getSellPricesForCode("RUB").get(bank));
+        assertEquals(Money.of(newValue,"RUB"), service.getSellPricesForCode("RUB").get(bank));
     }
 
     @Test

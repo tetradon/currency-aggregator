@@ -1,6 +1,7 @@
 package com.aggregator.provider;
 
 import com.aggregator.model.CurrencyRate;
+import org.javamoney.moneta.Money;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +65,7 @@ public class JsonCurrencyProviderTest {
         Double newValue = 999.999;
         provider.updateBuyPrice(file, "USD", newValue);
         CurrencyRate usdFromFile = provider.getData(file).get(0);
-        assertEquals(newValue, usdFromFile.getCurrencyRateBuyPrice());
+        assertEquals(Money.of(newValue, "USD"), usdFromFile.getCurrencyRateBuyPrice());
     }
 
     @Test
@@ -72,7 +73,7 @@ public class JsonCurrencyProviderTest {
         Double newValue = 999.999;
         provider.updateSellPrice(file, "CHF", newValue);
         CurrencyRate chfFromFile = provider.getData(file).get(1);
-        assertEquals(newValue, chfFromFile.getCurrencyRateSellPrice());
+        assertEquals(Money.of(newValue, "CHF"), chfFromFile.getCurrencyRateSellPrice());
     }
 
     @Test
