@@ -2,22 +2,26 @@ package com.aggregator.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByPosition;
+import org.javamoney.moneta.Money;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import java.util.Objects;
 
 public final class CurrencyRate {
 
     @JsonProperty("code")
     @CsvBindByPosition(position = 0)
-    private String currencyRateCode;
+    private CurrencyUnit currencyRateCode;
 
     @JsonProperty("buy")
     @CsvBindByPosition(position = 1)
-    private Double currencyRateBuyPrice;
+    private MonetaryAmount currencyRateBuyPrice;
 
     @JsonProperty("sell")
     @CsvBindByPosition(position = 2)
-    private Double currencyRateSellPrice;
+    private MonetaryAmount currencyRateSellPrice;
 
     public CurrencyRate() {
     }
@@ -25,34 +29,31 @@ public final class CurrencyRate {
     public CurrencyRate(final String code,
                         final Double buy,
                         final Double sell) {
-        this.currencyRateCode = code;
-        this.currencyRateBuyPrice = buy;
-        this.currencyRateSellPrice = sell;
+        currencyRateCode = Monetary.getCurrency(code);
+        currencyRateBuyPrice = Money.of(buy, currencyRateCode);
+        currencyRateSellPrice = Money.of(sell, currencyRateCode);
     }
 
-    public Double getCurrencyRateBuyPrice() {
+    public MonetaryAmount getCurrencyRateBuyPrice() {
         return currencyRateBuyPrice;
     }
 
     public void setCurrencyRateBuyPrice(final Double buy) {
-        currencyRateBuyPrice = buy;
+        currencyRateBuyPrice = Money.of(buy, currencyRateCode);
     }
 
-    public Double getCurrencyRateSellPrice() {
+    public MonetaryAmount getCurrencyRateSellPrice() {
         return currencyRateSellPrice;
     }
 
     public void setCurrencyRateSellPrice(final Double sell) {
-        currencyRateSellPrice = sell;
+        currencyRateSellPrice = Money.of(sell, currencyRateCode);
     }
 
     public String getCurrencyRateCode() {
-        return currencyRateCode;
+        return currencyRateCode.getCurrencyCode();
     }
 
-    public void setCurrencyRateCode(final String code) {
-        currencyRateCode = code;
-    }
 
     @Override
     public boolean equals(final Object o) {
