@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import javax.money.MonetaryAmount;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,11 +50,11 @@ public final class CurrencyController {
     }
 
     @GetMapping(value = "/{code}/{tag}", produces = "application/json")
-    public String getBuyPrices(final @PathVariable(value = "code") String code,
+    public String getPricesForCode(final @PathVariable(value = "code") String code,
                                final @PathVariable("tag") String tag,
                                final @RequestParam(value = "sort",
                                        required = false) String sort) {
-        Map<String, Double> resultMap = null;
+        Map<String, MonetaryAmount> resultMap = null;
         log.info(GET_REQUEST + code + "/" + tag
                 + " with param sort = " + sort);
         if (tag.equals("buy")) {
@@ -100,12 +101,12 @@ public final class CurrencyController {
                 getJsonFromMap(response);
     }
 
-    private Map<String, Double> sortIfNeeded(
+    private Map<String, MonetaryAmount> sortIfNeeded(
             @RequestParam(value = "sort", required = false)
                     final String sort,
-                    final Map<String, Double> unsortedMap) {
+                    final Map<String, MonetaryAmount> unsortedMap) {
         if (sort != null) {
-            Map<String, Double> sortedMap = new HashMap<>();
+            Map<String, MonetaryAmount> sortedMap = new HashMap<>();
             if (sort.equals("asc")) {
                 sortedMap = SortMapUtils.sortAsc(unsortedMap);
             } else if (sort.equals("desc")) {
