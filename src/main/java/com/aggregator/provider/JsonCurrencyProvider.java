@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public final class JsonCurrencyProvider implements CurrencyProvider {
@@ -61,9 +60,7 @@ public final class JsonCurrencyProvider implements CurrencyProvider {
 
         try {
             JsonNode rootNode = mapper.readTree(file);
-            Iterator iterator = rootNode.iterator();
-            while (iterator.hasNext()) {
-                JsonNode node = (JsonNode) iterator.next();
+            for (JsonNode node : rootNode) {
                 if (node.get("code").asText().equals(code)) {
                     ((ObjectNode) node).put(tag, newValue);
                 }
