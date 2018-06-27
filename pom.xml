@@ -8,6 +8,7 @@
     <artifactId>currency-aggregator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
+    <url>http://www.currency-aggregator.com/</url>
 
     <properties>
         <springframework.version>5.0.4.RELEASE</springframework.version>
@@ -263,6 +264,16 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -293,6 +304,12 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.7.201606060606</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+
         </plugins>
     </reporting>
 
