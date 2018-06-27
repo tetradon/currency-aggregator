@@ -20,8 +20,8 @@ public class ProviderFactoryTest {
         assertTrue(ProviderFactory.getProvider("csv") instanceof CsvCurrencyProvider);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testGetWrongProvider(){
-        assertNull(ProviderFactory.getProvider("wrong"));
+        ProviderFactory.getProvider("wrong");
     }
 }
