@@ -28,10 +28,10 @@ public class CsvCurrencyProviderTest {
 
         file = File.createTempFile("temp", ".csv");
         try (FileWriter writer = new FileWriter(file)) {
-            writer.write(
-                        "USD,25.85,26.1\n" +
-                            "RUB,0.37,0.43\n" +
-                            "EUR,30.4,30.69"
+            writer.write("code,buy,sell\n" +
+                    "USD,25.85,26.1\n" +
+                    "RUB,0.37,0.43\n" +
+                    "EUR,30.4,30.69"
             );
             writer.flush();
         }
