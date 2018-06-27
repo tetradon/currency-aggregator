@@ -21,7 +21,7 @@ public final class ProviderFactory {
             case "csv":
                 return CSV_CURRENCY_PROVIDER;
             default:
-                return null;
+                throw new IllegalArgumentException(extension + " is not supported");
         }
     }
 }
