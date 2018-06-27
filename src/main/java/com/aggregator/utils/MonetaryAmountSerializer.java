@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.money.MonetaryAmount;
 import java.io.IOException;
 
-public final class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount> {
+public final class MonetaryAmountSerializer
+        extends StdSerializer<MonetaryAmount> {
 
     public MonetaryAmountSerializer() {
         this(null);
