@@ -3,6 +3,7 @@ package com.aggregator.provider;
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.utils.FileUtils;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +27,13 @@ public final class CsvCurrencyProvider implements CurrencyProvider {
 
     @Override
     public List<CurrencyRate> getData(final File file) {
-        try (CSVReader reader = new CSVReader(
-                new InputStreamReader(
-                        new FileInputStream(file), StandardCharsets.UTF_8))) {
+        try (CSVReader reader =
+                     new CSVReaderBuilder(
+                             new InputStreamReader(
+                                     new FileInputStream(file),
+                                     StandardCharsets.UTF_8))
+                .withSkipLines(1)
+                             .build()) {
             List<String[]> entries = reader.readAll();
             for (String[] arr
                     : entries) {
