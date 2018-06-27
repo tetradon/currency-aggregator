@@ -58,9 +58,7 @@ public final class CurrencyRatesStorage {
         for (Map.Entry<String, List<CurrencyRate>> entry
                 : currencyData.entrySet()) {
             for (CurrencyRate rate : entry.getValue()) {
-                if (rate != null
-                        && rate.getCurrencyRateCode().equals(code)
-                        && rate.getCurrencyRateBuyPrice().isPositive()) {
+                if (buyRateIsValid(code, rate)) {
                     result.put(entry.getKey(), rate.getCurrencyRateBuyPrice());
                     break;
                 }
@@ -69,21 +67,31 @@ public final class CurrencyRatesStorage {
         return result;
     }
 
+    private boolean buyRateIsValid(String code, CurrencyRate rate) {
+        return rate != null
+                && rate.getCurrencyRateCode().equals(code)
+                && rate.getCurrencyRateBuyPrice().isPositive();
+    }
+
     public Map<String, MonetaryAmount> getSellPricesForCode(final String code) {
         Map<String, MonetaryAmount> result = new HashMap<>();
         for (Map.Entry<String, List<CurrencyRate>> entry
                 : currencyData.entrySet()) {
             for (CurrencyRate rate
                     : entry.getValue()) {
-                if (rate != null
-                        && rate.getCurrencyRateCode().equals(code)
-                        && rate.getCurrencyRateSellPrice().isPositive()) {
+                if (sellRateIsValid(code, rate)) {
                     result.put(entry.getKey(), rate.getCurrencyRateSellPrice());
                     break;
                 }
             }
         }
         return result;
+    }
+
+    private boolean sellRateIsValid(String code, CurrencyRate rate) {
+        return rate != null
+                && rate.getCurrencyRateCode().equals(code)
+                && rate.getCurrencyRateSellPrice().isPositive();
     }
 
     public Map<String,
@@ -187,9 +195,7 @@ public final class CurrencyRatesStorage {
                 : currencyData.entrySet()) {
             if (entry.getKey().equals(bank)) {
                 for (CurrencyRate rate : entry.getValue()) {
-                    if (rate != null
-                            && rate.getCurrencyRateCode().equals(code)
-                            && rate.getCurrencyRateSellPrice().isPositive()) {
+                    if (sellRateIsValid(code, rate)) {
                         rate.setCurrencyRateSellPrice(value);
                         break;
                     }
@@ -204,9 +210,7 @@ public final class CurrencyRatesStorage {
                 : currencyData.entrySet()) {
             if (entry.getKey().equals(bank)) {
                 for (CurrencyRate rate : entry.getValue()) {
-                    if (rate != null
-                            && rate.getCurrencyRateCode().equals(code)
-                            && rate.getCurrencyRateBuyPrice().isPositive()) {
+                    if (buyRateIsValid(code, rate)) {
                         rate.setCurrencyRateBuyPrice(value);
                         break;
                     }
