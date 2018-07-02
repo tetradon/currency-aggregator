@@ -6,6 +6,8 @@ import com.aggregator.utils.SortMapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,10 +71,11 @@ public final class CurrencyController {
     }
 
     @PutMapping(value = "/{code}/{tag}", produces = "application/json")
-    public String updateSellPrice(final @PathVariable("code") String code,
-                                  final @PathVariable("tag") String tag,
-                                  final @RequestParam("value") String value,
-                                  final @RequestParam("bank") String bank) {
+    public ResponseEntity updateSellPrice(
+            final @PathVariable("code") String code,
+            final @PathVariable("tag") String tag,
+            final @RequestParam("value") String value,
+            final @RequestParam("bank") String bank) {
         log.info("PUT request to /" + code + "/" + tag
                 + " with params value = " + value + ",bank = " + bank);
         if (tag.equals("buy")) {
@@ -80,17 +83,21 @@ public final class CurrencyController {
         } else if (tag.equals("sell")) {
             currencyService.updateSellPriceForBank(bank, code, value);
         }
-        log.info(RESPONSE + JsonResponse.OK_RESPONSE);
-        return JsonResponse.OK_RESPONSE;
-
+        ResponseEntity response = ResponseEntity.status(HttpStatus.OK)
+                .body(null);
+        log.info(RESPONSE + response);
+        return response;
     }
 
     @DeleteMapping(value = "/", produces = "application/json")
-    public String deleteRatesForBank(final @RequestParam("bank") String bank) {
+    public ResponseEntity deleteRatesForBank(
+            final @RequestParam("bank") String bank) {
         log.info("DELETE request to / with param bank = " + bank);
         currencyService.deleteRatesForBank(bank);
-        log.info(RESPONSE + JsonResponse.OK_RESPONSE);
-        return JsonResponse.OK_RESPONSE;
+        ResponseEntity response = ResponseEntity.status(HttpStatus.OK)
+                .body(null);
+        log.info(RESPONSE + response);
+        return response;
     }
 
     @GetMapping(value = "/report", produces = "application/json")
