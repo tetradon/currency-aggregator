@@ -1,6 +1,7 @@
 package com.aggregator.service;
 
 
+import com.aggregator.exception.BankNotFoundException;
 import org.javamoney.moneta.Money;
 import org.junit.After;
 import org.junit.Before;
@@ -67,9 +68,22 @@ public class CurrencyInMemoryServiceMutationTest {
         assertEquals(Money.of(newValue,"RUB"), service.getSellPricesForCode("RUB").get(bank));
     }
 
+    @Test(expected = BankNotFoundException.class)
+    public void testUpdateForWrongBank() {
+        Double newValue = 999.;
+        service.updateSellPriceForBank("wrong", "RUB", newValue.toString());
+        assertEquals(Money.of(newValue,"RUB"), service.getSellPricesForCode("RUB").get(bank));
+    }
+
     @Test
     public void testDelete() {
         service.deleteRatesForBank(bank);
+        assertTrue(service.getAllRates().isEmpty());
+    }
+
+    @Test(expected = BankNotFoundException.class)
+    public void testDeleteWrongBank() {
+        service.deleteRatesForBank("wrong");
         assertTrue(service.getAllRates().isEmpty());
     }
 
