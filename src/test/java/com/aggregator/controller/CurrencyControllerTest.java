@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -37,7 +38,7 @@ public class CurrencyControllerTest {
     private CurrencyController controller;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
@@ -135,7 +136,7 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(put("/RUB/buy")
                 .param("bank","pumb")
                 .param("value", "0.01")).andReturn();
-        assertEquals("{\"status\" : \"ok\"}", result.getResponse().getContentAsString());
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
     }
 
     @Test
@@ -143,7 +144,7 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(put("/RUB/sell")
                 .param("bank","pumb")
                 .param("value", "0.01")).andReturn();
-        assertEquals("{\"status\" : \"ok\"}", result.getResponse().getContentAsString());
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
     }
 
     @Test
@@ -151,7 +152,7 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(delete("/")
                 .param("bank","pumb"))
                 .andReturn();
-        assertEquals("{\"status\" : \"ok\"}" ,result.getResponse().getContentAsString());
+        assertEquals(HttpStatus.OK.value() ,result.getResponse().getStatus());
     }
 
     @Test
