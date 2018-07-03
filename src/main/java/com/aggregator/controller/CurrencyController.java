@@ -42,7 +42,7 @@ public final class CurrencyController {
     }
 
     @GetMapping(value = "/{code}", produces = "application/json")
-    public String getRatesForCode(final @PathVariable(value = "code")
+    public String getAllRatesForCode(final @PathVariable(value = "code")
                                               String code) {
         log.info(GET_REQUEST + code);
         Map response = currencyService.getRatesForCode(code);
@@ -71,7 +71,7 @@ public final class CurrencyController {
     }
 
     @PutMapping(value = "/{code}/{tag}", produces = "application/json")
-    public ResponseEntity updateSellPrice(
+    public ResponseEntity updatePrice(
             final @PathVariable("code") String code,
             final @PathVariable("tag") String tag,
             final @RequestParam("value") String value,
