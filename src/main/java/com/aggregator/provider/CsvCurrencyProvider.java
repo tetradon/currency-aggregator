@@ -20,13 +20,12 @@ import java.util.List;
 import java.util.Objects;
 
 public final class CsvCurrencyProvider implements CurrencyProvider {
-    private List<CurrencyRate> resultList = new ArrayList<>();
-
     private static final Logger log =
             LogManager.getLogger(CsvCurrencyProvider.class);
 
     @Override
     public List<CurrencyRate> getData(final File file) {
+        List<CurrencyRate> resultList = new ArrayList<>();
         try (CSVReader reader =
                      new CSVReaderBuilder(
                              new InputStreamReader(
