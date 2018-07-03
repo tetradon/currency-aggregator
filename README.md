@@ -34,11 +34,13 @@ Steps to deploy:
 
 1) In $CATALINA_HOME\conf\tomcat-users add following:
 ```xml
-<role rolename="manager-gui"/>
-<role rolename="manager-script"/>
-<user username="admin" password="password" roles="manager-gui, manager-script"/>
+<tomcat-users>
+    <role rolename="manager-gui"/>
+    <role rolename="manager-script"/>
+    <user username="admin" password="password" roles="manager-gui, manager-script"/>
+</tomcat-users>
 ```
-2) In $MAVEN_HOME/conf/settings.xml add following (you can change it later):
+2) In $MAVEN_HOME\conf\settings.xml add following (you can change it later):
 ```xml
 <server>
     <id>TomcatServer</id>
@@ -46,16 +48,19 @@ Steps to deploy:
     <password>password</password>
 </server>
 ```
-3) Launch tomcat ($CATALINA_HOME\bin\startup)
-4) Deploy:
+3) Update rates that located in currency-aggregator\src\main\webapp\WEB-INF\rates
+4) Launch tomcat ($CATALINA_HOME\bin\startup)
+5) Deploy:
 ```
 mvn install 
 mvn tomcat7:deploy
 ```
-5) currency-aggregator is on http://localhost:8080 now.
+6) currency-aggregator is on http://localhost:8080 now.
 You can change url, path and server in pom.xml in properties section, by default it's:
 ```xml
- <tomcat.server>TomcatServer</tomcat.server>
- <tomcat.url>http://localhost:8080/manager/text</tomcat.url>
- <tomcat.path>/</tomcat.path>
+<properties>
+    <tomcat.server>TomcatServer</tomcat.server>
+    <tomcat.url>http://localhost:8080/manager/text</tomcat.url>
+    <tomcat.path>/</tomcat.path>
+</properties>
 ```
