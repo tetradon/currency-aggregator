@@ -9,8 +9,10 @@ import javax.money.MonetaryAmount;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -138,5 +140,12 @@ public class CurrencyStorageTest {
         Map<String, MonetaryAmount> map = new HashMap<>();
         map.put(bankPumb, pumbEur.getCurrencyRateSellPrice());
         assertEquals(map, storage.getSellPricesForCode("EUR"));
+    }
+
+    @Test
+    public void testGetAllCodesForBank(){
+        Set codes = storage.getAllCodesForBank(bankPumb);
+        Set expected = new HashSet<>(Arrays.asList("RUB","EUR","USD"));
+        assertEquals(expected, codes);
     }
 }
