@@ -1,5 +1,6 @@
 package com.aggregator.controller;
 
+import com.aggregator.exception.OperationNotSupportedException;
 import com.aggregator.response.JsonResponse;
 import com.aggregator.service.CurrencyService;
 import com.aggregator.utils.SortMapUtils;
@@ -57,13 +58,18 @@ public final class CurrencyController {
             final @PathVariable("tag") String tag,
             final @RequestParam(value = "sort",
                     required = false) String sort) {
-        Map<String, MonetaryAmount> resultMap = null;
+        Map<String, MonetaryAmount> resultMap;
         log.info(GET_REQUEST + code + "/" + tag
                 + " with param sort = " + sort);
-        if (tag.equals("buy")) {
-            resultMap = currencyService.getBuyPricesForCode(code);
-        } else if (tag.equals("sell")) {
-            resultMap = currencyService.getSellPricesForCode(code);
+        switch (tag) {
+            case "buy":
+                resultMap = currencyService.getBuyPricesForCode(code);
+                break;
+            case "sell":
+                resultMap = currencyService.getSellPricesForCode(code);
+                break;
+            default:
+                throw new OperationNotSupportedException(tag);
         }
         resultMap = sortIfNeeded(sort, resultMap);
         log.info(RESPONSE + resultMap);
@@ -78,10 +84,15 @@ public final class CurrencyController {
             final @RequestParam("bank") String bank) {
         log.info("PUT request to /" + code + "/" + tag
                 + " with params value = " + value + ",bank = " + bank);
-        if (tag.equals("buy")) {
-            currencyService.updateBuyPriceForBank(bank, code, value);
-        } else if (tag.equals("sell")) {
-            currencyService.updateSellPriceForBank(bank, code, value);
+        switch (tag) {
+            case "buy":
+                currencyService.updateBuyPriceForBank(bank, code, value);
+                break;
+            case "sell":
+                currencyService.updateSellPriceForBank(bank, code, value);
+                break;
+            default:
+                throw new OperationNotSupportedException(tag);
         }
         ResponseEntity response = ResponseEntity.status(HttpStatus.OK)
                 .body(null);
