@@ -107,7 +107,7 @@ public final class CurrencyInMemoryService
         File[] foundFiles
                 = FileUtils.findFilesInFolderByName(folderWithRates, bank);
         if (foundFiles.length == 0) {
-            throw new BankNotFoundException("Bank doesn't exist");
+            throw new BankNotFoundException(bank);
         }
         return foundFiles[0];
     }
