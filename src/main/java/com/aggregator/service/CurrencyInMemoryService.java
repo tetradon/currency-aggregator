@@ -1,6 +1,7 @@
 package com.aggregator.service;
 
 import com.aggregator.exception.BankNotFoundException;
+import com.aggregator.exception.CurrencyNotFoundException;
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.provider.CurrencyProvider;
 import com.aggregator.provider.ProviderFactory;
@@ -69,22 +70,34 @@ public final class CurrencyInMemoryService
     public void updateSellPriceForBank(final String bank, final String code,
                                        final String value) {
         File file = getFirstFile(bank);
-        currencyProvider = ProviderFactory
-                .getProvider(FileUtils.getExtension(file));
-        currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
-        currencyRatesStorage
-                .updateSellPriceForBank(bank, code, Double.valueOf(value));
+        if (bankContainsCode(bank, code)) {
+            currencyProvider = ProviderFactory
+                    .getProvider(FileUtils.getExtension(file));
+            currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
+            currencyRatesStorage
+                    .updateSellPriceForBank(bank, code, Double.valueOf(value));
+        } else {
+            throw new CurrencyNotFoundException(code);
+        }
     }
 
     @Override
     public void updateBuyPriceForBank(final String bank, final String code,
                                       final String value) {
         File file = getFirstFile(bank);
-        currencyProvider = ProviderFactory
-                .getProvider(FileUtils.getExtension(file));
-        currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
-        currencyRatesStorage
-                .updateBuyPriceForBank(bank, code, Double.valueOf(value));
+        if (bankContainsCode(bank, code)) {
+            currencyProvider = ProviderFactory
+                    .getProvider(FileUtils.getExtension(file));
+            currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
+            currencyRatesStorage
+                    .updateBuyPriceForBank(bank, code, Double.valueOf(value));
+        } else {
+            throw new CurrencyNotFoundException(code);
+        }
+    }
+
+    private boolean bankContainsCode(String bank, String code) {
+        return currencyRatesStorage.getAllCodesForBank(bank).contains(code);
     }
 
     @Override

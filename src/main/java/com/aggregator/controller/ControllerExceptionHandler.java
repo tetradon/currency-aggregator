@@ -1,6 +1,7 @@
 package com.aggregator.controller;
 
 import com.aggregator.exception.BankNotFoundException;
+import com.aggregator.exception.CurrencyNotFoundException;
 import com.aggregator.exception.OperationNotSupportedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,15 +20,17 @@ public class ControllerExceptionHandler
     private static final Logger log =
             LogManager.getLogger(ControllerExceptionHandler.class);
 
-        @ExceptionHandler({ BankNotFoundException.class,
-                OperationNotSupportedException.class })
-        public ResponseEntity<ObjectNode> handleUnprocessableEntity(
-                Exception e) {
-            log.warn(e.getMessage(), e);
+    @ExceptionHandler({BankNotFoundException.class,
+            OperationNotSupportedException.class,
+            CurrencyNotFoundException.class
+    })
+    public ResponseEntity<ObjectNode> handleUnprocessableEntity(
+            Exception e) {
+        log.warn(e.getMessage(), e);
 
-            ObjectNode message = mapper.createObjectNode();
-            message.put("message", e.getMessage());
-            return new ResponseEntity<>(
-                    message, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        ObjectNode message = mapper.createObjectNode();
+        message.put("message", e.getMessage());
+        return new ResponseEntity<>(
+                message, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 }
