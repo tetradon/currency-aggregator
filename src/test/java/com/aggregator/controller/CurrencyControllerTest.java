@@ -96,7 +96,8 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"pumb\":[{\"code\":\"USD\",\"buy\":26.11,\"sell\":27.11},{\"code\":\"RUB\",\"buy\":0.4,\"sell\":0.5}]}",result.getResponse().getContentAsString());
+        assertEquals("{\"pumb\":[{\"code\":\"USD\",\"buy\":26.11,\"sell\":27.11},{\"code\":\"RUB\",\"buy\":0.4,\"sell\":0.5}]}",
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
     @Test
@@ -104,7 +105,8 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/USD"))
                 .andExpect(status().isOk())
                 .andReturn();
-       assertEquals("{\"pumb\":{\"code\":\"USD\",\"buy\":26.11,\"sell\":27.11}}",result.getResponse().getContentAsString());
+       assertEquals("{\"pumb\":{\"code\":\"USD\",\"buy\":26.11,\"sell\":27.11}}",
+               result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
     @Test
@@ -112,7 +114,8 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/RUB"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"pumb\":{\"code\":\"RUB\",\"buy\":0.4,\"sell\":0.5}}" , result.getResponse().getContentAsString());
+        assertEquals("{\"pumb\":{\"code\":\"RUB\",\"buy\":0.4,\"sell\":0.5}}" ,
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
 
@@ -121,7 +124,8 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/RUB/buy"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"pumb\":0.4}",result.getResponse().getContentAsString());
+        assertEquals("{\"pumb\":0.4}",
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
 
@@ -130,7 +134,8 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/USD/sell"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"pumb\":27.11}", result.getResponse().getContentAsString());
+        assertEquals("{\"pumb\":27.11}",
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
     @Test
@@ -180,7 +185,8 @@ public class CurrencyControllerTest {
         MvcResult result = mockMvc.perform(get("/report"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"USD\":{\"buy\":{\"pumb\":26.11},\"sell\":{\"pumb\":27.11}},\"RUB\":{\"buy\":{\"pumb\":0.4},\"sell\":{\"pumb\":0.5}}}" , result.getResponse().getContentAsString());
+        assertEquals("{\"USD\":{\"buy\":{\"pumb\":26.11},\"sell\":{\"pumb\":27.11}},\"RUB\":{\"buy\":{\"pumb\":0.4},\"sell\":{\"pumb\":0.5}}}" ,
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
     @Test
@@ -189,7 +195,8 @@ public class CurrencyControllerTest {
                 .param("sort", "asc"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"pumb\":0.4}", result.getResponse().getContentAsString());
+        assertEquals("{\"pumb\":0.4}",
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 
     @Test
@@ -198,6 +205,7 @@ public class CurrencyControllerTest {
                 .param("sort", "desc"))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("{\"pumb\":0.4}", result.getResponse().getContentAsString());
+        assertEquals("{\"pumb\":0.4}",
+                result.getResponse().getContentAsString().replaceAll("\\s+",""));
     }
 }
