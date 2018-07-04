@@ -6,11 +6,11 @@ public class BankNotFoundException extends RuntimeException {
     }
 
     public BankNotFoundException(String message) {
-        super(message);
+        super("'" + message + "' does not exist");
     }
 
     public BankNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+        super("'" + message + "' does not exist", cause);
     }
 
     public BankNotFoundException(Throwable cause) {
