@@ -23,7 +23,7 @@ public class ControllerExceptionHandler
                 OperationNotSupportedException.class })
         public ResponseEntity<ObjectNode> handleUnprocessableEntity(
                 Exception e) {
-            log.error(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
 
             ObjectNode message = mapper.createObjectNode();
             message.put("message", e.getMessage());
