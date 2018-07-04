@@ -12,7 +12,6 @@ import javax.money.MonetaryAmount;
 import java.util.Map;
 
 public final class JsonResponse {
-    public static final  String OK_RESPONSE = "{\"status\" : \"ok\"}";
     private static ObjectMapper mapper = new ObjectMapper();
 
     private static final Logger log =
@@ -29,7 +28,9 @@ public final class JsonResponse {
 
         String response = "";
         try {
-            response = mapper.writeValueAsString(map);
+            response = mapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(map);
         } catch (JsonProcessingException e) {
             log.error("Exception while JSON processing", e);
         }
