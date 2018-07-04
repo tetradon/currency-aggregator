@@ -189,6 +189,20 @@ public final class CurrencyRatesStorage {
         return list;
     }
 
+    public Set<String> getAllCodesForBank(String bank) {
+        Set<String> codes = new HashSet<>();
+        for (Map.Entry<String, List<CurrencyRate>> entry
+                : currencyData.entrySet()) {
+            if (entry.getKey().equals(bank)) {
+                for (CurrencyRate rate : entry.getValue()) {
+                    codes.add(rate.getCurrencyRateCode());
+                }
+                break;
+            }
+        }
+        return codes;
+    }
+
     public void updateSellPriceForBank(final String bank, final String code,
                                        final Double value) {
         for (Map.Entry<String, List<CurrencyRate>> entry
