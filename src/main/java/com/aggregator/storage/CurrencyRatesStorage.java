@@ -1,20 +1,18 @@
 package com.aggregator.storage;
 
 import com.aggregator.model.CurrencyRate;
+import com.aggregator.utils.ListUtils;
 import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Component;
 
 
 import javax.money.MonetaryAmount;
-import java.io.Serializable;
 import java.util.AbstractMap;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -110,16 +108,21 @@ public final class CurrencyRatesStorage {
             for (Map.Entry<String, List<CurrencyRate>> entry
                     : currencyData.entrySet()) {
 
-                List<CurrencyRate> rates = filterOutByCode(code, entry);
+                List<CurrencyRate> rates = ListUtils
+                        .filterOutByCode(code, entry);
 
                 if (rates.isEmpty()) {
                     continue;
                 }
 
-                List<CurrencyRate> sortedBuyRates = sortByBuyPrice(rates);
-                List<CurrencyRate> sortedSellRates = sortBySellPrice(rates);
-                MonetaryAmount localMaxBuy = getLast(sortedBuyRates);
-                MonetaryAmount localMinSell = getFirst(sortedSellRates);
+                List<CurrencyRate> sortedBuyRates =
+                        ListUtils.sortByBuyPrice(rates);
+                List<CurrencyRate> sortedSellRates =
+                        ListUtils.sortBySellPrice(rates);
+                MonetaryAmount localMaxBuy =
+                        ListUtils.getLast(sortedBuyRates);
+                MonetaryAmount localMinSell =
+                        ListUtils.getFirst(sortedSellRates);
 
                 if (localMaxBuy.isGreaterThan(maxBuy)) {
                     maxBuy = localMaxBuy;
@@ -143,39 +146,6 @@ public final class CurrencyRatesStorage {
             result.put(code, mapEntry);
         }
         return result;
-    }
-
-    private List<CurrencyRate> filterOutByCode(
-            String code, Map.Entry<String, List<CurrencyRate>> entry) {
-        return entry.getValue()
-                .stream()
-                .filter(rate -> rate.getCurrencyRateCode().equals(code))
-                .collect(Collectors.toList());
-    }
-
-    private MonetaryAmount getFirst(List<CurrencyRate> sortedSellRates) {
-        return sortedSellRates
-                .get(0).getCurrencyRateSellPrice();
-    }
-
-    private MonetaryAmount getLast(List<CurrencyRate> sortedBuyRates) {
-        return sortedBuyRates
-                .get(sortedBuyRates.size() - 1)
-                .getCurrencyRateBuyPrice();
-    }
-
-    private List<CurrencyRate> sortBySellPrice(List<CurrencyRate> rates) {
-        return rates
-                .stream()
-                .sorted(new SellComparator())
-                .collect(Collectors.toList());
-    }
-
-    private List<CurrencyRate> sortByBuyPrice(List<CurrencyRate> rates) {
-        return rates
-                .stream()
-                .sorted(new BuyComparator())
-                .collect(Collectors.toList());
     }
 
     private Set<String> getAllCodes() {
@@ -239,22 +209,6 @@ public final class CurrencyRatesStorage {
 
     public void putData(final String s, final List<CurrencyRate> rates) {
         currencyData.put(s, rates);
-    }
-
-    private static class BuyComparator
-            implements Comparator<CurrencyRate>, Serializable {
-        public int compare(CurrencyRate r1, CurrencyRate r2) {
-            return r1.getCurrencyRateBuyPrice()
-                    .compareTo(r2.getCurrencyRateBuyPrice());
-        }
-    }
-
-    private static class SellComparator
-            implements Comparator<CurrencyRate>, Serializable {
-        public int compare(CurrencyRate r1, CurrencyRate r2) {
-            return r1.getCurrencyRateSellPrice()
-                    .compareTo(r2.getCurrencyRateSellPrice());
-        }
     }
 }
 
