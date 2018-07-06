@@ -6,6 +6,7 @@ import com.aggregator.dao.CurrencyRatesDao;
 import com.aggregator.dao.CurrencyRatesDatabaseDao;
 import com.aggregator.service.CurrencyDbService;
 import com.aggregator.service.CurrencyService;
+import org.flywaydb.core.Flyway;
 import org.junit.After;
 import org.junit.Before;
 
@@ -19,10 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
@@ -43,44 +40,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @ActiveProfiles(profiles = "db")
 public class CurrencyAggregatorIntegrationDbTest {
-    private DriverManagerDataSource dataSource;
     private MockMvc mockMvc;
-
+    private Flyway flyway;
     @Before
     public void setUp(){
 
-        dataSource = new DriverManagerDataSource();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
         dataSource.setUrl("jdbc:h2:file:~/test");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
 
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("CREATE TABLE IF NOT EXISTS currency_rates(\n" +
-                    "    bank varchar(127) not null,\n" +
-                    "    code varchar(3) not null,\n" +
-                    "    buy double not null,\n" +
-                    "    sell double not null,\n" +
-                    "    primary key(bank,code)\n" +
-                    ");").executeUpdate();
-            connection.prepareStatement(
-                    "INSERT INTO currency_rates VALUES ('otp','USD',25.9,26.1);\n" +
-                            "INSERT INTO currency_rates VALUES ('otp','CHF',25.75,26.35);\n" +
-                            "INSERT INTO currency_rates VALUES ('otp','EUR',30.2,30.75);" +
-                            "INSERT INTO currency_rates VALUES ('aval','EUR',30.3,30.8);\n" +
-                            "INSERT INTO currency_rates VALUES ('aval','USD',25.8,26.2);\n" +
-                            "INSERT INTO currency_rates VALUES ('aval','RUB',0.414,0.424);\n" +
-                            "INSERT INTO currency_rates VALUES ('aval','CHF',25.8,26.45);\n" +
-                            "INSERT INTO currency_rates VALUES ('aval','GBP',34.4,35.0); " +
-                            "INSERT INTO currency_rates VALUES ('pumb','USD',26.0,26.2);\n" +
-                            "INSERT INTO currency_rates VALUES ('pumb','RUB',0.41,0.42);\n" +
-                            "INSERT INTO currency_rates VALUES ('pumb','EUR',30.5,30.9);\n" +
-                            "INSERT INTO currency_rates VALUES ('pumb','CHF',25.5,26.3);\n" +
-                            "INSERT INTO currency_rates VALUES ('pumb','GBP',34.3,35.0);"
-            ).executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        flyway = new Flyway();
+        flyway.setDataSource(dataSource);
+        flyway.migrate();
 
         CurrencyRatesDao currencyRatesDao = new CurrencyRatesDatabaseDao(dataSource);
         CurrencyService currencyService = new CurrencyDbService(currencyRatesDao);
@@ -302,9 +275,7 @@ public class CurrencyAggregatorIntegrationDbTest {
     }
 
     @After
-    public void cleanup() throws SQLException {
-        Connection connection = dataSource.getConnection();
-        connection.prepareStatement("DROP TABLE currency_rates;").executeUpdate();
-        connection.close();
+    public void cleanUp(){
+        flyway.clean();
     }
 }
