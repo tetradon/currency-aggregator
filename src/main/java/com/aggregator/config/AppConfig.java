@@ -63,10 +63,15 @@ public class AppConfig implements WebMvcConfigurer {
         dataSource.setUrl(environment.getProperty("jdbc.url"));
         dataSource.setUsername(environment.getProperty("jdbc.username"));
         dataSource.setPassword(environment.getProperty("jdbc.password"));
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(dataSource);
-        flyway.migrate();
         return dataSource;
+    }
+
+    @Bean(initMethod = "migrate")
+    @Profile("db")
+    public Flyway flyway() {
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dataSource());
+        return flyway;
     }
 
     @Override
