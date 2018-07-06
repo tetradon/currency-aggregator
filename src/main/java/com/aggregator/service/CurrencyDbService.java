@@ -4,6 +4,7 @@ import com.aggregator.dao.CurrencyRatesDao;
 import com.aggregator.model.CurrencyRate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.money.MonetaryAmount;
@@ -12,13 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public final class CurrencyDbService implements CurrencyService {
+@Profile("db")
+public final class CurrencyDbService
+        implements CurrencyService {
 
     private CurrencyRatesDao currencyRatesDao;
 
     @Autowired
-    public CurrencyDbService(CurrencyRatesDao currencyRatesDao) {
-        this.currencyRatesDao = currencyRatesDao;
+    public CurrencyDbService(CurrencyRatesDao dao) {
+        currencyRatesDao = dao;
     }
 
     @Override
@@ -57,7 +60,9 @@ public final class CurrencyDbService implements CurrencyService {
     }
 
     @Override
-    public Map<String, Map<String, Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
+    public Map<String,
+            Map<String,
+                    Map.Entry<String, MonetaryAmount>>> getBestPropositions() {
         return currencyRatesDao.getBestPropositions();
     }
 }

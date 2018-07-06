@@ -5,8 +5,9 @@ import com.aggregator.exception.CurrencyNotFoundException;
 import com.aggregator.model.CurrencyRate;
 import com.aggregator.provider.CurrencyProvider;
 import com.aggregator.provider.ProviderFactory;
-import com.aggregator.storage.CurrencyRatesStorage;
+import com.aggregator.dao.CurrencyRatesStorage;
 import com.aggregator.utils.FileUtils;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.money.MonetaryAmount;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
+@Profile("file")
 public final class CurrencyInMemoryService
         implements CurrencyService {
     private CurrencyRatesStorage currencyRatesStorage;
@@ -75,7 +77,7 @@ public final class CurrencyInMemoryService
                     .getProvider(FileUtils.getExtension(file));
             currencyProvider.updateSellPrice(file, code, Double.valueOf(value));
             currencyRatesStorage
-                    .updateSellPriceForBank(bank, code, Double.valueOf(value));
+                    .updateSellPriceForBank(bank, code, value);
         } else {
             throw new CurrencyNotFoundException(code);
         }
@@ -90,7 +92,7 @@ public final class CurrencyInMemoryService
                     .getProvider(FileUtils.getExtension(file));
             currencyProvider.updateBuyPrice(file, code, Double.valueOf(value));
             currencyRatesStorage
-                    .updateBuyPriceForBank(bank, code, Double.valueOf(value));
+                    .updateBuyPriceForBank(bank, code, value);
         } else {
             throw new CurrencyNotFoundException(code);
         }
