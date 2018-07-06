@@ -19,13 +19,13 @@ import java.util.Map;
 
 @Component
 @Profile("db")
-public final class CurrencyRatesDaoImpl implements CurrencyRatesDao {
+public final class CurrencyRatesDatabaseDao implements CurrencyRatesDao {
 
     private JdbcTemplate jdbcTemplate;
     private static final String SELECT_ALL = "SELECT * FROM currency_rates";
 
     @Autowired
-    public CurrencyRatesDaoImpl(DataSource dataSource) {
+    public CurrencyRatesDatabaseDao(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

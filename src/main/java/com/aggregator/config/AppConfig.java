@@ -1,7 +1,7 @@
 package com.aggregator.config;
 
 
-import com.aggregator.dao.CurrencyRatesDaoImpl;
+import com.aggregator.dao.CurrencyRatesDatabaseDao;
 import com.aggregator.service.CurrencyDbService;
 import com.aggregator.service.CurrencyInMemoryService;
 import com.aggregator.service.CurrencyService;
@@ -49,7 +49,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Profile("db")
     public CurrencyService currencyDbService() {
         return new CurrencyDbService(
-                new CurrencyRatesDaoImpl(dataSource()));
+                new CurrencyRatesDatabaseDao(dataSource()));
     }
 
     @Bean
