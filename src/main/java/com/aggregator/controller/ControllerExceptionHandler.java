@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.h2.jdbc.JdbcSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,5 +33,25 @@ public class ControllerExceptionHandler
         message.put("message", e.getMessage());
         return new ResponseEntity<>(
                 message, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<ObjectNode> handleNumberFormatException(
+            NumberFormatException e) {
+        log.warn(e.getMessage(), e);
+        ObjectNode message = mapper.createObjectNode();
+        message.put("message", e.getMessage());
+        return new ResponseEntity<>(
+                message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JdbcSQLException.class)
+    public ResponseEntity<ObjectNode> handleException(
+            Exception e) {
+        log.warn(e.getMessage(), e);
+        ObjectNode message = mapper.createObjectNode();
+        message.put("message", e.getMessage());
+        return new ResponseEntity<>(
+                message, HttpStatus.CONFLICT);
     }
 }
