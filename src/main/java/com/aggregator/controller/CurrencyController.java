@@ -2,13 +2,11 @@ package com.aggregator.controller;
 
 import com.aggregator.exception.OperationNotSupportedException;
 import com.aggregator.response.JsonResponse;
-import com.aggregator.service.CurrencyDbService;
 import com.aggregator.service.CurrencyService;
 import com.aggregator.utils.SortMapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,6 @@ import java.util.Map;
 
 @RestController
 public final class CurrencyController {
-
     private final CurrencyService currencyService;
 
     private static final Logger log =
@@ -33,7 +30,7 @@ public final class CurrencyController {
     private static final String RESPONSE = "Response: ";
 
     @Autowired
-    public CurrencyController(@Qualifier("currencyDbService") final CurrencyService service) {
+    public CurrencyController(CurrencyService service) {
         this.currencyService = service;
     }
 
