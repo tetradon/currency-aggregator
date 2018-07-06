@@ -1,7 +1,7 @@
 package com.aggregator.service;
 
 import com.aggregator.model.CurrencyRate;
-import com.aggregator.storage.CurrencyRatesStorage;
+import com.aggregator.dao.CurrencyRatesStorage;
 import org.junit.Before;
 import org.junit.Test;
 

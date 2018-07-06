@@ -1,5 +1,6 @@
 package com.aggregator.storage;
 
+import com.aggregator.dao.CurrencyRatesStorage;
 import com.aggregator.model.CurrencyRate;
 import org.javamoney.moneta.Money;
 import org.junit.Before;
@@ -41,28 +42,28 @@ public class CurrencyStorageTest {
     @Test
     public void testUpdateBuyPrice(){
         Double newValue = 123.123;
-        storage.updateBuyPriceForBank(bankPumb,"USD",newValue);
+        storage.updateBuyPriceForBank(bankPumb,"USD", String.valueOf(newValue));
         assertEquals(storage.getBuyPricesForCode("USD").get("pumb"), Money.of(newValue, "USD"));
     }
 
     @Test
     public void testUpdateSellPrice(){
         Double newValue = 123.123;
-        storage.updateSellPriceForBank(bankPumb,"RUB",newValue);
+        storage.updateSellPriceForBank(bankPumb,"RUB",String.valueOf(newValue));
         assertEquals(storage.getSellPricesForCode("RUB").get("pumb"),Money.of(newValue, "RUB"));
     }
 
     @Test
     public void testUpdateNullSellRatesForCode(){
         storage.getAllRates().get(bankPumb).set(0, null);
-        storage.updateSellPriceForBank(bankPumb,"USD",999.);
+        storage.updateSellPriceForBank(bankPumb,"USD","999.");
         assertTrue(storage.getSellPricesForCode("USD").isEmpty());
     }
 
     @Test
     public void testUpdateNullBuyRatesForCode(){
         storage.getAllRates().get(bankPumb).set(1, null);
-        storage.updateBuyPriceForBank(bankPumb,"RUB",999.);
+        storage.updateBuyPriceForBank(bankPumb,"RUB","999.");
         assertTrue(storage.getBuyPricesForCode("RUB").isEmpty());
     }
 
