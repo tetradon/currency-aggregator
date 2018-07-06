@@ -1,16 +1,22 @@
 currency-aggregator
 ========
 
-currency-aggregator can aggregate currency rates from files into integral storage
-and provides possibility to retrieving and managing the storage
+currency-aggregator provides a possibility to aggregate currency rates from files or databases.
+With help of currency-aggregator you can retrieve and manage currency rates in a handy way.
 
 
 Features
 --------
 
-- supports most common file extensions: xml, json, csv;
+- supports storing rates in the most common file extensions: xml, json, csv;
+- supports storing rates in database;
 - easy to use and intuitive API;
-- provides possibility to generate report with best prices among banks.
+- provides possibility to generate report with best prices among banks;
+
+service support storage rates in files or in database, you can configure needed storage in src\main\resources\application.properties file)
+```properties
+spring.profiles.active = #supported 'file' and 'db' profiles
+```
 
 Running standalone app
 ------------
@@ -48,14 +54,13 @@ Steps to deploy:
     <password>password</password>
 </server>
 ```
-3) Update rates that located in currency-aggregator\src\main\webapp\WEB-INF\rates
-4) Launch tomcat ($CATALINA_HOME\bin\startup)
-5) Deploy:
+3) Launch tomcat ($CATALINA_HOME\bin\startup)
+4) Deploy:
 ```
 mvn install 
 mvn tomcat7:deploy
 ```
-6) currency-aggregator is on http://localhost:8080 now.
+5) currency-aggregator is on http://localhost:8080 now.
 You can change url, path and server in pom.xml in properties section, by default it's:
 ```xml
 <properties>
