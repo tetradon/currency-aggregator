@@ -23,6 +23,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -41,17 +45,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "db")
 public class CurrencyAggregatorIntegrationDbTest {
     private MockMvc mockMvc;
-    private Flyway flyway;
+
     @Before
     public void setUp(){
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:file:~/test");
+        dataSource.setUrl("jdbc:h2:file:./test");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
 
-        flyway = new Flyway();
+        Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
         flyway.migrate();
 
@@ -275,7 +279,7 @@ public class CurrencyAggregatorIntegrationDbTest {
     }
 
     @After
-    public void cleanUp(){
-        flyway.clean();
+    public void cleanUp() throws IOException {
+        Files.deleteIfExists(Paths.get("test.mv.db"));
     }
 }
