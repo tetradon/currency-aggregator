@@ -172,7 +172,7 @@ public class CurrencyAggregatorIntegrationDbTest {
                 .andExpect(jsonPath("$.EUR.buy.pumb").value(30.5))
                 .andExpect(jsonPath("$.EUR.sell.otp").value(30.75))
                 .andExpect(jsonPath("$.GBP.buy.aval").value(34.4))
-                .andExpect(jsonPath("$.GBP.sell.aval").value(35.0))
+                .andExpect(jsonPath("$.GBP.sell.*").value(35.0))
                 .andExpect(jsonPath("$.USD.buy.pumb").value(26.0))
                 .andExpect(jsonPath("$.USD.sell.otp").value(26.1))
                 .andExpect(jsonPath("$.RUB.buy.aval").value(0.414))
@@ -281,5 +281,6 @@ public class CurrencyAggregatorIntegrationDbTest {
     @After
     public void cleanUp() throws IOException {
         Files.deleteIfExists(Paths.get("test.mv.db"));
+        Files.deleteIfExists(Paths.get("test.trace.db"));
     }
 }
